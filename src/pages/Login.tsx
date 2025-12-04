@@ -1,16 +1,15 @@
 import { useAuth } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import "./SignUp.css";
+import "./Login.css";
 
-function SignUp() {
-  // State for form inputs and error handling
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUp } = useAuth(); // Get signUp function from context
+  const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,8 +17,8 @@ function SignUp() {
     setLoading(true);
     setError("");
     try {
-      await signUp(email, password);
-      navigate("/"); // Redirect to home on successful signup
+      await signIn(email, password);
+      navigate("/");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -28,14 +27,12 @@ function SignUp() {
   };
 
   return (
-    <div className="signup-page">
-      <div className="signup-card">
-        <h1>Create Account</h1>
-        <p className="signup-subtitle">
-          Join CodeIdeas and start sharing your project ideas
-        </p>
+    <div className="login-page">
+      <div className="login-card">
+        <h1>Welcome Back</h1>
+        <p className="login-subtitle">Sign in to your CodeIdeas account</p>
 
-        <form className="signup-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -56,7 +53,7 @@ function SignUp() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="Enter your password"
               disabled={loading}
               required
             />
@@ -64,17 +61,17 @@ function SignUp() {
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="signup-button" disabled={loading}>
-            {loading ? "Creating account..." : "Sign Up"}
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? "Logging In..." : "Log In"}
           </button>
         </form>
 
-        <div className="signup-footer">
-          Already have an account? <a href="/login">Log In</a>
+        <div className="login-footer">
+          Don't have an account? <a href="/signup">Sign Up</a>
         </div>
       </div>
     </div>
   );
 }
 
-export default SignUp;
+export default Login;

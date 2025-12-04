@@ -3,6 +3,8 @@ import Header from "./components/Header";
 import LandingPage from "./components/LandingPage";
 import About from "./pages/About";
 import Browse from "./pages/Browse";
+import SignUp from "./pages/SignUp";
+import Login from "./pages/Login";
 import "./App.css";
 
 function App() {
@@ -13,6 +15,9 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/about" element={<About />} />
         <Route path="/browse" element={<Browse />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<h2>Page Not Found</h2>} />
       </Routes>
     </Router>
   );

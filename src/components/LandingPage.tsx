@@ -16,7 +16,9 @@ function LandingPage() {
             <Link to="/browse" className="btn btn-primary">
               Browse Ideas
             </Link>
-            <button className="btn btn-secondary">Share Your Idea</button>
+            <Link to="/signup" className="btn btn-secondary">
+              Share Your Idea
+            </Link>
           </div>
         </div>
       </section>
@@ -68,7 +70,9 @@ function LandingPage() {
             Join thousands of developers collaborating on innovative coding
             ideas.
           </p>
-          <button className="btn btn-primary btn-large">Get Started Now</button>
+          <Link to="/signup" className="btn btn-primary btn-large">
+            Get Started Now
+          </Link>
         </div>
       </section>
     </main>
