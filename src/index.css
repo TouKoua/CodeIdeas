@@ -7,8 +7,8 @@
 html,
 body,
 #root {
-  height: 100%;
-  width: 100%;
+  height: auto;
+  width: auto;
 }
 
 :root {
@@ -73,9 +73,11 @@ button:focus-visible {
     color: #213547;
     background-color: #ffffff;
   }
+
   a:hover {
     color: #747bff;
   }
+
   button {
     background-color: #f9f9f9;
   }
