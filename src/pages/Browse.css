@@ -1,0 +1,52 @@
+.browse-page {
+    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+    padding: 6rem 2rem;
+    text-align: center;
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.browse-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 80%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.browse-intro {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.browse-design {
+    align-items: center;
+    flex: auto;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.browse-design h1 {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font: bold;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.browse-intro p {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: #a0a0b0;
+    max-width: 48rem;
+}
