@@ -1,8 +1,18 @@
+import "./Browse.css";
+
 function Browse() {
   return (
-    <div style={{ padding: "2rem", textAlign: "center" }}>
-      <h2>Browse Ideas</h2>
-      <p>Browse coding project ideas and find one to collaborate on.</p>
+    <div className="browse-page">
+      <div className="browse-intro">
+        <div className="browse-design">
+          <h1>Explore Project Ideas</h1>
+        </div>
+        <p>
+          Browse through hundreds of project ideas from the community. Find
+          inspiration, learn new skills, and build your portfolio with projects
+          that match your interests and skill level.
+        </p>
+      </div>
     </div>
   );
 }
