@@ -18,7 +18,7 @@ function Login() {
     setError("");
     try {
       await signIn(email, password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
     } finally {

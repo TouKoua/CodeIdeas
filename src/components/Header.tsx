@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
 function Header() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const homeLink = user ? "/dashboard" : "/";
+
+  const handleLogOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="header">
@@ -22,9 +29,15 @@ function Header() {
           <Link to="/about" className="nav-link">
             About
           </Link>
-          <Link to="/signup" className="nav-link">
-            <button className="cta-button">Share Your Idea</button>
-          </Link>
+          {user ? (
+            <button onClick={handleLogOut} className="nav-link logout-button">
+              Logout
+            </button>
+          ) : (
+            <Link to="/signup" className="nav-link">
+              <button className="cta-button">Share Your Idea</button>
+            </Link>
+          )}
         </nav>
       </div>
     </header>
