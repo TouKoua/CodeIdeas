@@ -19,7 +19,7 @@ function SignUp() {
     setError("");
     try {
       await signUp(email, password);
-      navigate("/"); // Redirect to home on successful signup
+      navigate("/dashboard"); // Redirect to home on successful signup
     } catch (err: any) {
       setError(err.message);
     } finally {
