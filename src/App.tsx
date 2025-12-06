@@ -6,6 +6,7 @@ import Browse from "./pages/Browse";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
