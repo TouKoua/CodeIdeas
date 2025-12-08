@@ -6,6 +6,7 @@ import Browse from "./pages/Browse";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import CreateIdea from "./pages/CreateIdea";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -25,6 +26,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-idea"
+          element={
+            <ProtectedRoute>
+              <CreateIdea />
             </ProtectedRoute>
           }
         />
