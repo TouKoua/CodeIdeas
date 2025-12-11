@@ -1,15 +1,27 @@
 import { Link } from "react-router-dom";
 import "./Browse.css";
 import ProjectCard from "../components/ProjectCard";
-import { fetchAllProjects } from "../context/ProjectFetch";
+import { useState, useEffect } from "react";
+import type { ProjectIdeas } from "../types";
+import supabase from "../services/supabaseClient";
 
-async function Browse() {
-  const projects = (await fetchAllProjects()) || [];
-  const getProjectsToDisplay = () => {
-    return projects.slice(0, 1);
-  };
+function Browse() {
+  const [projects, setProjects] = useState<ProjectIdeas[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const projectsToDisplay = getProjectsToDisplay();
+  useEffect(() => {
+    const fetchProjects = async () => {
+      const { data, error } = await supabase.from("ideas").select("*");
+      if (error) {
+        setError(error.message);
+        setProjects([]);
+      } else {
+        setProjects(data);
+        setError(null);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   return (
     <div className="browse-page">
@@ -28,9 +40,9 @@ async function Browse() {
           that match your interests and skill level.
         </p>
       </div>
-      {projectsToDisplay.length > 0 ? (
+      {projects.length > 0 ? (
         <div className="browse-projects">
-          {projectsToDisplay.map((project) => (
+          {projects.map((project) => (
             <Link
               to={`/project/${project.id}`}
               key={project.id}
