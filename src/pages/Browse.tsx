@@ -41,7 +41,7 @@ function Browse() {
         </p>
       </div>
       {projects.length > 0 ? (
-        <div className="browse-projects">
+        <div className="browse-cards">
           {projects.map((project) => (
             <Link
               to={`/project/${project.id}`}

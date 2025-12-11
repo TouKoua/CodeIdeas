@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import type { ProjectIdeas } from "../types";
+import "./ProjectCard.css";
 
 interface ProjectCardProps {
   project: ProjectIdeas;
@@ -8,14 +9,14 @@ interface ProjectCardProps {
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
-    <div className="card-properties">
-      <div className="p-5">
-        <div className="flex justify-between items-start mb-3">
-          <h3 className="text-lg font-semibold text-gray-900 line-clamp-1">
-            {project.id}
-          </h3>
-          <div className="flex items-center gap-2"></div>
+    <div className="card-design">
+      <div className="card-padding">
+        <div className="card-title-section">
+          <h3 className="card-title">{project.title}</h3>
+          <div className="card-top-icons"></div>
+          <div className="card-spacing"></div>
         </div>
+        <p className="card-description">{project.description}</p>
       </div>
     </div>
   );
