@@ -1,3 +1,3 @@
-export type Project = {
+export interface ProjectIdeas{
   id: string;
 };

@@ -1,14 +1,12 @@
 import { Link } from "react-router-dom";
-import { useProjects } from "../context/ProjectContext";
-import type { Project } from "../types";
+import React from "react";
+import type { ProjectIdeas } from "../types";
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectIdeas;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
-  /*const { saveProject } = useProjects();*/
-
   return (
     <div className="card-properties">
       <div className="p-5">

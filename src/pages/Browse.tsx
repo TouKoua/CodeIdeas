@@ -1,14 +1,10 @@
 import { Link } from "react-router-dom";
 import "./Browse.css";
 import ProjectCard from "../components/ProjectCard";
-import { useState, useEffect } from "react";
-import supabase from "../services/supabaseClient";
-import { useProjects } from "../context/ProjectContext";
+import { fetchAllProjects } from "../context/ProjectFetch";
 
-function Browse() {
-  const { projects } = useProjects();
-  const [error, setError] = useState("");
-
+async function Browse() {
+  const projects = (await fetchAllProjects()) || [];
   const getProjectsToDisplay = () => {
     return projects.slice(0, 1);
   };
@@ -47,7 +43,7 @@ function Browse() {
       ) : (
         <p>No projects available at the moment. Please check back later.</p>
       )}
-      {error && <p className="error-message">{error}</p>}
+      {/* {error && <p className="error-message">{error}</p>} */}
     </div>
   );
 }

@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import type { ReactNode } from "react";
-import type { Project } from "../types";
+import type { ProjectIdeas } from "../types";
 
 //Project Context type data
 type ProjectContextType = {
-  projects: Project[];
+  projects: ProjectIdeas[];
   loading: boolean;
 };
 
@@ -23,7 +23,7 @@ export const useProjects = () => {
 
 //Project Provider component
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<ProjectIdeas[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   //Fetch projects from Supabase
@@ -41,9 +41,11 @@ export const ProjectProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     FetchProjects();
   }, []);
+
   const value = React.useMemo(
     () => ({ projects, loading }),
     [projects, loading]
