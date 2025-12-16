@@ -3,7 +3,8 @@
     border-radius: 0.5rem;
     border-width: 1px;
     border-color: #E5E7EB;
-    background-color: #ffffff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
@@ -36,11 +37,67 @@
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 600;
-    color: #111827;
 }
 
 .card-spacing {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+}
+
+.default {
+    color: #1F2937;
+    background-color: #F3F4F6;
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
+
+}
+
+.primary {
+    color: #3730A3;
+    background-color: #E0E7FF;
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
+
+}
+
+.secondary {
+    color: #047857;
+    background-color: #d1fae5;
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.success {
+    color: #065F46;
+    background-color: #D1FAE5;
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
+
+}
+
+.warning {
+    color: rgb(146 64 14);
+    background-color: rgb(255 237 208);
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.danger {
+    color: #991B1B;
+    background-color: #FEE2E2;
+    padding: 4px 8px;
+    margin-left: 0.25rem;
+    text-align: center;
+    border-radius: 5px;
 }
