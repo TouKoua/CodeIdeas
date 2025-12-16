@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateIdea from "./pages/CreateIdea";
+import ProfilePage from "./pages/ProfilePage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
@@ -35,6 +36,14 @@ function App() {
           element={
             <ProtectedRoute>
               <CreateIdea />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage user_id={null} />
             </ProtectedRoute>
           }
         />
