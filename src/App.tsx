@@ -11,6 +11,7 @@ import ProfilePage from "./pages/ProfilePage";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
+import { ProjectProvider } from "./context/ProjectContext";
 
 function App() {
   return (

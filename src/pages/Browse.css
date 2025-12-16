@@ -1,13 +1,10 @@
 .browse-page {
-    background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
-    padding: 6rem 2rem;
-    text-align: center;
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 80rem;
+
 }
 
 .browse-page::before {
@@ -73,4 +70,20 @@
 .btn-primary:hover {
     background-color: rgba(102, 126, 234, 0.1);
     transform: translateY(-3px);
+}
+
+.browse-cards {
+    display: grid;
+    position: relative;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+
+    @media (min-width: 640px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
 }
