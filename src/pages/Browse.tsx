@@ -7,6 +7,7 @@ import supabase from "../services/supabaseClient";
 
 function Browse() {
   const [projects, setProjects] = useState<ProjectIdeas[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,6 +23,36 @@ function Browse() {
     };
     fetchProjects();
   }, []);
+
+  const categories = [
+    { id: "all", name: "All Projects" },
+    { id: "recent", name: "Recent" },
+    { id: "beginner", name: "Beginner Friendly" },
+  ];
+
+  const latestProjects = [...projects]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
+    .slice(0, 12);
+
+  const beginnerProjects = projects
+    .filter((project) => project.difficulty === "beginner")
+    .slice(0, 12);
+
+  const getProjectsToDisplay = () => {
+    switch (selectedCategory) {
+      case "recent":
+        return latestProjects;
+      case "beginner":
+        return beginnerProjects;
+      default:
+        return projects.slice(0, 12); // Show first 12 projects for "All" category
+    }
+  };
+
+  const projectsToDisplay = getProjectsToDisplay();
 
   return (
     <div className="browse-page">
@@ -49,11 +80,23 @@ function Browse() {
         </Link>
       </div>
       <div className="card-display">
-        <button className="placeholder"> Placeholder</button>
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`category-selects ${
+              selectedCategory === category.id
+                ? "selected-category"
+                : "not-selected-category"
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
       </div>
-      {projects.length > 0 ? (
+      {projectsToDisplay.length > 0 ? (
         <div className="browse-cards">
-          {projects.map((project) => (
+          {projectsToDisplay.map((project) => (
             <Link
               to={`/project/${project.id}`}
               key={project.id}

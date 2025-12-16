@@ -4,4 +4,5 @@ export interface ProjectIdeas{
   difficulty: string;
   status: string;
   description: string;
+  created_at: string;
 };

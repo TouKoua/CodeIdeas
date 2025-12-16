@@ -102,7 +102,7 @@
     gap: 0.5rem;
 }
 
-.placeholder {
+.category-selects {
     display: flex;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -114,5 +114,18 @@
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
+}
 
+.selected-category {
+    color: #3730A3;
+    background-color: #E0E7FF;
+}
+
+.not-selected-category {
+    color: #1F2937;
+    background-color: #F3F4F6;
+}
+
+.not-selected-category:hover {
+    background-color: #E5E7EB;
 }
