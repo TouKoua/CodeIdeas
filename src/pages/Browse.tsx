@@ -1,17 +1,14 @@
 import { Link } from "react-router-dom";
-import "./Browse.css";
 
 function Browse() {
   return (
     <div className="browse-page">
       <div className="browse-intro">
         <div className="browse-design">
-          <h1>
-            Explore Project Ideas
-            <Link to="/signup" className="btn btn-primary">
-              Refresh
-            </Link>
-          </h1>
+          <h1>Explore Project Ideas</h1>
+          <Link to="/signup" className="btn btn-primary">
+            <h2>Refresh</h2>
+          </Link>
         </div>
         <p>
           Browse through hundreds of project ideas from the community. Find

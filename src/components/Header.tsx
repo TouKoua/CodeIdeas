@@ -29,6 +29,9 @@ function Header() {
           <Link to="/about" className="nav-link">
             About
           </Link>
+          <Link to="/profile" className="nav-link">
+            My Profile
+          </Link>
           {user ? (
             <button onClick={handleLogOut} className="nav-link logout-button">
               Logout
