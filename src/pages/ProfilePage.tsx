@@ -73,6 +73,7 @@ function ProfilePage({ user_id }: { user_id: string | null }) {
             <p>{userData?.bio}</p>
           </div>
           <div className="profile-skills">
+            <h2>Skills</h2>
             {(userData?.skills || []).map((skill: string) => (
               <span key={skill} className="skill-badge">
                 {skill}
