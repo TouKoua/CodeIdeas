@@ -3,14 +3,7 @@ import { useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import "./ProfilePage.css";
-
-interface UserProfile {
-  id: string;
-  full_name: string;
-  bio?: string;
-  avatar_url?: string;
-  skills?: string[];
-}
+import type { UserProfile } from "../types/index";
 
 function EditProfile() {
   const { user } = useAuth();
@@ -52,7 +45,7 @@ function EditProfile() {
   return (
     <div className="edit-profile-page">
       {userData?.full_name && (
-        <div>
+        <form onSubmit={handleSubmit}>
           <div className="edit-profile-header">
             <h1>{userData?.full_name}</h1>
 
@@ -71,7 +64,7 @@ function EditProfile() {
               </span>
             ))}
           </div>
-        </div>
+        </form>
       )}
       {error && <div className="edit-profile-error-message">{error}</div>}
     </div>
