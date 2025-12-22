@@ -1,28 +1,12 @@
 import { Link } from "react-router-dom";
 import "./Browse.css";
 import ProjectCard from "../components/ProjectCard";
-import { useState, useEffect } from "react";
-import type { ProjectIdeas } from "../types";
-import supabase from "../services/supabaseClient";
+import { useState } from "react";
+import useFetchProjectList from "../context/ProjectGetter";
 
 function Browse() {
-  const [projects, setProjects] = useState<ProjectIdeas[]>([]);
+  const projectList = useFetchProjectList();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      const { data, error } = await supabase.from("ideas").select("*");
-      if (error) {
-        setError(error.message);
-        setProjects([]);
-      } else {
-        setProjects(data);
-        setError(null);
-      }
-    };
-    fetchProjects();
-  }, []);
 
   const categories = [
     { id: "all", name: "All Projects" },
@@ -30,14 +14,14 @@ function Browse() {
     { id: "beginner", name: "Beginner Friendly" },
   ];
 
-  const latestProjects = [...projects]
+  const latestProjects = [...projectList.projects]
     .sort(
       (a, b) =>
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
     .slice(0, 12);
 
-  const beginnerProjects = projects
+  const beginnerProjects = projectList.projects
     .filter((project) => project.difficulty === "beginner")
     .slice(0, 12);
 
@@ -48,7 +32,7 @@ function Browse() {
       case "beginner":
         return beginnerProjects;
       default:
-        return projects.slice(0, 12); // Show first 12 projects for "All" category
+        return projectList.projects.slice(0, 12); // Show first 12 projects for "All" category
     }
   };
 

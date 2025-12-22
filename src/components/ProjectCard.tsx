@@ -2,36 +2,12 @@ import { Link } from "react-router-dom";
 import React from "react";
 import type { ProjectIdeas } from "../types";
 import "./ProjectCard.css";
+import "../ui/Badge.css";
+import { getDifficultyColor, getStatusColor } from "../ui/Badge";
 
 interface ProjectCardProps {
   project: ProjectIdeas;
 }
-
-const getDifficultyColor = (difficulty: string) => {
-  switch (difficulty) {
-    case "beginner":
-      return "success";
-    case "intermediate":
-      return "warning";
-    case "advance":
-      return "danger";
-    default:
-      return "default";
-  }
-};
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "recruiting":
-      return "primary";
-    case "working":
-      return "warning";
-    case "completed":
-      return "success";
-    default:
-      return "default";
-  }
-};
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (

@@ -6,9 +6,9 @@ import Browse from "./pages/Browse";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import Project from "./pages/Project";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
-import { ProjectProvider } from "./context/ProjectContext";
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
         <Route path="/browse" element={<Browse />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/project/:id" element={<Project />} />
         <Route
           path="/dashboard"
           element={

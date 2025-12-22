@@ -4,5 +4,8 @@ export interface ProjectIdeas{
   difficulty: string;
   status: string;
   description: string;
+  programming_languages: string[];
+  programming_skills: string[];
   created_at: string;
+  
 };
