@@ -11,13 +11,16 @@ function Browse() {
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const { data, error } = await supabase.from("ideas").select("*");
-      if (error) {
+      try {
+        const { data, error } = await supabase.from("ideas").select("*");
+        if (error) {
+          setProjects([]);
+          throw error;
+        } else {
+          setProjects(data);
+        }
+      } catch (error: any) {
         setError(error.message);
-        setProjects([]);
-      } else {
-        setProjects(data);
-        setError(null);
       }
     };
     fetchProjects();
@@ -53,7 +56,7 @@ function Browse() {
       ) : (
         <p>No projects available at the moment. Please check back later.</p>
       )}
-      {/* {error && <p className="error-message">{error}</p>} */}
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }

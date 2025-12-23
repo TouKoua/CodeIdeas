@@ -1,6 +1,7 @@
 import { useAuth } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { addTag, removeTag, handleTagKeyPress } from "../utils/formHelpers.ts";
 import supabase from "../services/supabaseClient.ts";
 import "./CreateIdea.css";
 
@@ -25,21 +26,17 @@ function CreateIdea() {
     /* Tags/Pills Helper functions */
   }
   const addTechStack = () => {
-    const trimmedTech = techInput.trim();
-    if (trimmedTech && !techStack.includes(trimmedTech)) {
-      setTechStack([...techStack, trimmedTech]);
-      setTechInput("");
-    }
+    addTag(techInput, techStack, setTechStack, setTechInput);
   };
 
   const removeTechStack = (tech: string) => {
-    setTechStack(techStack.filter((t) => t !== tech));
+    removeTag(tech, techStack, setTechStack);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      addTechStack();
+      handleTagKeyPress(e, techInput, techStack, setTechStack, setTechInput);
     }
   };
 

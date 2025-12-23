@@ -8,10 +8,10 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateIdea from "./pages/CreateIdea";
 import ProfilePage from "./pages/ProfilePage";
+import EditProfile from "./pages/EditProfile";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
-import { ProjectProvider } from "./context/ProjectContext";
 
 function App() {
   return (
@@ -44,6 +44,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage user_id={null} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-profile"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
             </ProtectedRoute>
           }
         />
