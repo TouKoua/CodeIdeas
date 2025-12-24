@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import type { ProjectIdeas } from "../types";
+import type { Idea } from "../types";
 import supabase from "../services/supabaseClient";
 
 // Get project list from Supabase
 export default function useFetchProjectList() {
-  const [projects, setProjects] = useState<ProjectIdeas[]>([]);
+  const [projects, setProjects] = useState<Idea[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -48,9 +48,9 @@ export function useFetchSingleProject(id: string) {
   return { project, error };
 }
 
-export function useFetchSimilarProjects(project: ProjectIdeas) {
-  const [projectList, setProjectList] = useState<ProjectIdeas[]>([]);
-  const [similarProjects, setSimilarProjects] = useState<ProjectIdeas[]>([]);
+export function useFetchSimilarProjects(project: Idea) {
+  const [projectList, setProjectList] = useState<Idea[]>([]);
+  const [similarProjects, setSimilarProjects] = useState<Idea[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ export function useFetchSimilarProjects(project: ProjectIdeas) {
         ?.filter(
           (p) =>
             p.id !== project.id &&
-            p.tech_stack?.some((stack) => project.tech_stack.includes(stack))
+            p.tech_stack?.some((stack) => project.tech_stack?.includes(stack))
         )
         .sort(() => 0.5 - Math.random()) // Shuffle
         .slice(0, 3);

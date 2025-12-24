@@ -1,11 +1,11 @@
 import React from "react";
-import type { ProjectIdeas } from "../types";
+import type { Idea } from "../types";
 import "./ProjectCard.css";
 import "../ui/Badge.css";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
 
 interface ProjectCardProps {
-  project: ProjectIdeas;
+  project: Idea;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
