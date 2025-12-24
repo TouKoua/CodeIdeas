@@ -1,11 +1,3 @@
-export interface ProjectIdeas{
-  id: string;
-  title:string;
-  difficulty: string;
-  status: string;
-  description: string;
-};
-
 export interface UserProfile {
   id: string;
   full_name: string;
@@ -22,7 +14,7 @@ export interface Idea {
   category: string;
   status: 'open' | 'in-progress' | 'completed';
   tech_stack?: string[];
-  difficulty_level?: 'beginner' | 'intermediate' | 'advanced';
+  difficulty?: 'beginner' | 'intermediate' | 'advanced';
   team_size?: number;
   github_link?: string;
   duration?: string;
