@@ -25,7 +25,7 @@ export default function useFetchProjectList() {
 
 //Get a single project matching the id from Supabase
 export function useFetchSingleProject(id: string) {
-  const [project, setProject] = useState<ProjectIdeas>({} as ProjectIdeas);
+  const [project, setProject] = useState<Idea>({} as Idea);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function useFetchSingleProject(id: string) {
         .single();
       if (error) {
         setError(error.message);
-        setProject({} as ProjectIdeas);
+        setProject({} as Idea);
       } else {
         setProject(data);
         setError(null);
