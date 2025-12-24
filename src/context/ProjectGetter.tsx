@@ -66,14 +66,15 @@ export function useFetchSimilarProjects(project: ProjectIdeas) {
         }
       };
       fetchProjects();
+
       const similar = projectList
         ?.filter(
           (p) =>
             p.id !== project.id &&
-            (p.programming_languages.some((lang) =>
+            (p.programming_languages?.some((lang) =>
               project.programming_languages.includes(lang)
             ) ||
-              p.programming_skills.some((skill) =>
+              p.programming_skills?.some((skill) =>
                 project.programming_skills.includes(skill)
               ))
         )

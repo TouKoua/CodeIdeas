@@ -3,6 +3,7 @@ import {
   useFetchSimilarProjects,
   useFetchSingleProject,
 } from "../context/ProjectGetter";
+import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
@@ -19,10 +20,12 @@ function Project() {
       </button>
       <div className="grid-layout">
         <div className="divider">
-          <div className="card-design">
-            <div className="card-padding">
-              <div className="card-stuff">
-                <div className="card-title">{singleProject.project?.title}</div>
+          <div className="project-section">
+            <div className="project-padding">
+              <div className="project-spacing">
+                <div className="project-title">
+                  {singleProject.project?.title}
+                </div>
                 <div className="badge-spacing">
                   <p>
                     <span
@@ -42,27 +45,26 @@ function Project() {
               </div>
             </div>
           </div>
-          <div className="other-section">
-            <div className="other-layout">
-              {projectList.similarProjects.length > 0 && (
-                <div>
-                  <h3 className="similar-project-title">Similar Projects</h3>
-                  <div className="similar-project-spacing">
-                    {projectList.similarProjects.map((similarProject) => (
-                      <Link
-                        to={`/project/${similarProject.id}`}
-                        state={{ from: "project" }}
-                        key={similarProject.id}
-                        className="block"
-                      >
-                        <ProjectCard project={similarProject} />
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+        </div>
+        <div className="other-section">
+          <div className="other-layout"></div>
+          {projectList.similarProjects.length > 0 && (
+            <div>
+              <h3 className="similar-project-title">Similar Projects</h3>
+              <div className="similar-project-spacing">
+                {projectList.similarProjects.map((similarProject) => (
+                  <Link
+                    to={`/project/${similarProject.id}`}
+                    state={{ from: "project" }}
+                    key={similarProject.id}
+                    className="block"
+                  >
+                    <ProjectCard project={similarProject} />
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
