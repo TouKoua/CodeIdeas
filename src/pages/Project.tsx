@@ -19,13 +19,13 @@ function Project() {
         Back
       </button>
       <div className="grid-layout">
-        <div className="divider">
+        <div className="project-column">
           <div className="project-section">
             <div className="project-padding">
               <div className="project-spacing">
-                <div className="project-title">
+                <h1 className="project-title">
                   {singleProject.project?.title}
-                </div>
+                </h1>
                 <div className="badge-spacing">
                   <p>
                     <span
@@ -42,12 +42,17 @@ function Project() {
                     </span>
                   </p>
                 </div>
+                <div className="project-description-spacing">
+                  <p className="project-description">
+                    {singleProject.project.description}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="other-section">
-          <div className="other-layout"></div>
+        <div className="other-column">
+          <div className="profile-section"></div>
           {projectList.similarProjects.length > 0 && (
             <div>
               <h3 className="similar-project-title">Similar Projects</h3>

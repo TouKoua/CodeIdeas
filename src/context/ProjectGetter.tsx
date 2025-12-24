@@ -71,12 +71,7 @@ export function useFetchSimilarProjects(project: ProjectIdeas) {
         ?.filter(
           (p) =>
             p.id !== project.id &&
-            (p.programming_languages?.some((lang) =>
-              project.programming_languages.includes(lang)
-            ) ||
-              p.programming_skills?.some((skill) =>
-                project.programming_skills.includes(skill)
-              ))
+            p.tech_stack?.some((stack) => project.tech_stack.includes(stack))
         )
         .sort(() => 0.5 - Math.random()) // Shuffle
         .slice(0, 3);
