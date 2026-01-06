@@ -1,39 +1,53 @@
 import { Link } from "react-router-dom";
 import "./Browse.css";
 import ProjectCard from "../components/ProjectCard";
-import { useState, useEffect } from "react";
-import type { ProjectIdeas } from "../types";
-import supabase from "../services/supabaseClient";
+import { useState } from "react";
+import useFetchProjectList from "../context/ProjectGetter";
 
 function Browse() {
-  const [projects, setProjects] = useState<ProjectIdeas[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const projectList = useFetchProjectList();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const { data, error } = await supabase.from("ideas").select("*");
-        if (error) {
-          setProjects([]);
-          throw error;
-        } else {
-          setProjects(data);
-        }
-      } catch (error: any) {
-        setError(error.message);
-      }
-    };
-    fetchProjects();
-  }, []);
+  const categories = [
+    { id: "all", name: "All Projects" },
+    { id: "recent", name: "Recent" },
+    { id: "beginner", name: "Beginner Friendly" },
+  ];
+
+  const latestProjects = [...projectList.projects]
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    )
+    .slice(0, 12);
+
+  const beginnerProjects = projectList.projects
+    .filter((project) => project.difficulty === "beginner")
+    .slice(0, 12);
+
+  const getProjectsToDisplay = () => {
+    switch (selectedCategory) {
+      case "recent":
+        return latestProjects;
+      case "beginner":
+        return beginnerProjects;
+      default:
+        return projectList.projects.slice(0, 12); // Show first 12 projects for "All" category
+    }
+  };
+
+  const projectsToDisplay = getProjectsToDisplay();
 
   return (
     <div className="browse-page">
-      <div className="browse-intro">
-        <div className="browse-design">
-          <h1>Explore Project Ideas</h1>
-          <Link to="/signup" className="btn btn-primary">
-            <h2>Refresh</h2>
-          </Link>
+      <div className="browse-top">
+        <div className="browse-top-design">
+          <h1>
+            Explore Project Ideas
+            <Link to="/signup" className="btn btn-primary">
+              Refresh
+            </Link>
+          </h1>
         </div>
         <p>
           Browse through hundreds of project ideas from the community. Find
@@ -41,9 +55,32 @@ function Browse() {
           that match your interests and skill level.
         </p>
       </div>
-      {projects.length > 0 ? (
+      <div className="quick-actions">
+        <Link to="/new-project">
+          <button>Post New Idea</button>
+        </Link>
+        <Link to="/search">
+          <button>Advanced Search</button>
+        </Link>
+      </div>
+      <div className="card-display">
+        {categories.map((category) => (
+          <button
+            key={category.id}
+            onClick={() => setSelectedCategory(category.id)}
+            className={`category-selects ${
+              selectedCategory === category.id
+                ? "selected-category"
+                : "not-selected-category"
+            }`}
+          >
+            {category.name}
+          </button>
+        ))}
+      </div>
+      {projectsToDisplay.length > 0 ? (
         <div className="browse-cards">
-          {projects.map((project) => (
+          {projectsToDisplay.map((project) => (
             <Link
               to={`/project/${project.id}`}
               key={project.id}
@@ -56,7 +93,7 @@ function Browse() {
       ) : (
         <p>No projects available at the moment. Please check back later.</p>
       )}
-      {error && <p className="error-message">{error}</p>}
+      {/*{error && <p className="error-message">{error}</p>}*/}
     </div>
   );
 }
