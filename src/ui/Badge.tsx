@@ -1,10 +1,12 @@
-export const getDifficultyColor = (difficulty: string) => {
+import type { Idea } from "../types";
+
+export const getDifficultyColor = (difficulty: Idea["difficulty"]) => {
   switch (difficulty) {
     case "beginner":
       return "success";
     case "intermediate":
       return "warning";
-    case "advance":
+    case "advanced":
       return "danger";
     default:
       return "default";
