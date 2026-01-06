@@ -15,7 +15,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         <div className="card-title-section">
           <h3 className="card-title">{project.title}</h3>
           <p>
-            <span className={getDifficultyColor(project.difficulty)}>
+            <span className={getDifficultyColor(project.difficulty || "")}>
               {project.difficulty}
             </span>
             <span className={getStatusColor(project.status)}>

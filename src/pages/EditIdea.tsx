@@ -44,11 +44,6 @@ function EditIdea() {
     const fetchIdeaDetails = async (ideaId: string) => {
       // Function to fetch existing idea details and populate the form
       // This can be implemented using Supabase to get the idea by ID
-      const { data, error } = await supabase
-        .from("ideas")
-        .select("*")
-        .eq("id", ideaId)
-        .single();
     };
   }, []);
 

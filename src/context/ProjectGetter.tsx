@@ -25,27 +25,33 @@ export default function useFetchProjectList() {
 
 //Get a single project matching the id from Supabase
 export function useFetchSingleProject(id: string) {
-  const [project, setProject] = useState<Idea>({} as Idea);
+  const [project, setProject] = useState<Idea | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const { data, error } = await supabase
-        .from("ideas")
-        .select("*")
-        .eq("id", id)
-        .single();
-      if (error) {
-        setError(error.message);
-        setProject({} as Idea);
-      } else {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error } = await supabase
+          .from("ideas")
+          .select("*")
+          .eq("id", id)
+          .single();
+        if (error) throw error;
         setProject(data);
-        setError(null);
+      } catch (err: any) {
+        setError(err.message);
+        setProject(null);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProjects();
   }, [id]);
-  return { project, error };
+
+  return { project, loading, error };
 }
 
 export function useFetchSimilarProjects(project: Idea) {

@@ -7,11 +7,14 @@ import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
+import type { Idea } from "../types";
 
 function Project() {
   const { id } = useParams<{ id: string }>();
   const singleProject = useFetchSingleProject(id!);
-  const projectList = useFetchSimilarProjects(singleProject.project);
+  const projectList = useFetchSimilarProjects(
+    singleProject.project || ({} as Idea)
+  );
 
   return (
     <div className="project-page">
@@ -30,21 +33,23 @@ function Project() {
                   <p>
                     <span
                       className={getDifficultyColor(
-                        singleProject.project.difficulty
+                        singleProject.project?.difficulty || ""
                       )}
                     >
-                      {singleProject.project.difficulty}
+                      {singleProject.project?.difficulty}
                     </span>
                     <span
-                      className={getStatusColor(singleProject.project.status)}
+                      className={getStatusColor(
+                        singleProject.project?.status || ""
+                      )}
                     >
-                      {singleProject.project.status}
+                      {singleProject.project?.status}
                     </span>
                   </p>
                 </div>
                 <div className="project-description-spacing">
                   <p className="project-description">
-                    {singleProject.project.description}
+                    {singleProject.project?.description}
                   </p>
                 </div>
               </div>

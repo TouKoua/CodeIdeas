@@ -82,7 +82,7 @@ function Browse() {
         <div className="browse-cards">
           {projectsToDisplay.map((project) => (
             <Link
-              to={`/project/${project.id}`}
+              to={`/view-idea/${project.id}`}
               key={project.id}
               className="block"
             >

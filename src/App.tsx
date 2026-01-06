@@ -10,6 +10,7 @@ import CreateIdea from "./pages/CreateIdea";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfile from "./pages/EditProfile";
 import Project from "./pages/Project";
+import ViewIdeas from "./pages/ViewIdeas";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/project/:id" element={<Project />} />
+        <Route path="/view-idea/:projectID" element={<ViewIdeas />} />
         <Route
           path="/dashboard"
           element={
