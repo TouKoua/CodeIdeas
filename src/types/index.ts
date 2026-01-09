@@ -13,7 +13,8 @@ export interface Idea {
   description: string;
   category: string;
   status: 'open' | 'in-progress' | 'completed';
-  tech_stack?: string[];
+  languages?: string[];
+  technologies?: string[];
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   team_size?: number;
   github_link?: string;

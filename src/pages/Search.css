@@ -1,0 +1,67 @@
+.search-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    max-width: 80rem;
+
+    @media (min-width: 640px) {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    @media (min-width: 1024px) {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.search-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.search-bar-position {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-input {
+    display: block;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-right: 1rem;
+    padding-left: 2.5rem;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-color: #D1D5DB;
+    width: 100%;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.search-results-layout {
+    @media (min-width: 1024px) {
+        grid-column: span 3 / span 3;
+    }
+}
+
+.search-results-count {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #6B7280;
+}
+
+.search-card-spacing {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+
+    @media (min-width: 768px) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

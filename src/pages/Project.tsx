@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import {
   useFetchSimilarProjects,
   useFetchSingleProject,
+  useFetchTeamCount,
 } from "../context/ProjectGetter";
 import { useAuth } from "../context/AuthContext";
 import "./Project.css";
@@ -14,6 +15,7 @@ function Project() {
   const { user } = useAuth();
   const singleProject = useFetchSingleProject(id!);
   const projectList = useFetchSimilarProjects(singleProject.project);
+  //const teamCount = useFetchTeamCount(singleProject.project);
   const isOwner = user && user.id === singleProject.project.creator_id;
   const displayDate =
     singleProject.project.updated_at || singleProject.project.created_at;
@@ -103,8 +105,8 @@ function Project() {
                         </strong>
                         {singleProject.project.team_size > 0 && (
                           <span className="project-contributor-text">
-                            (peep joined/{singleProject.project.team_size}{" "}
-                            joined)
+                            (peeps/
+                            {singleProject.project.team_size} joined)
                           </span>
                         )}
                       </span>
@@ -118,7 +120,7 @@ function Project() {
                   </span>
                 </div>
                 <div className="project-language-spacing-2">
-                  {singleProject.project.tech_stack?.map((language) => (
+                  {singleProject.project.languages?.map((language) => (
                     <Link
                       key={language}
                       to={`/search?language=${language}`}

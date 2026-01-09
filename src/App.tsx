@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import CreateIdea from "./pages/CreateIdea";
 import ProfilePage from "./pages/ProfilePage";
+import Search from "./pages/Search";
 import EditProfile from "./pages/EditProfile";
 import Project from "./pages/Project";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -24,6 +25,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
         <Route path="/project/:id" element={<Project />} />
+        <Route path="/search" element={<Search />} />
         <Route
           path="/dashboard"
           element={
