@@ -25,59 +25,83 @@ export default function useFetchProjectList() {
 
 //Get a single project matching the id from Supabase
 export function useFetchSingleProject(id: string) {
-  const [project, setProject] = useState<Idea>({} as Idea);
+  const [project, setProject] = useState<Idea | null>(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      const { data, error } = await supabase
-        .from("ideas")
-        .select("*")
-        .eq("id", id)
-        .single();
-      if (error) {
-        setError(error.message);
-        setProject({} as Idea);
-      } else {
-        setProject(data);
-        setError(null);
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchProject = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error: fetchError } = await supabase
+          .from("ideas")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (fetchError) throw fetchError;
+        setProject(data || null);
+      } catch (err: any) {
+        setError(err.message);
+        setProject(null);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchProjects();
+    fetchProject();
   }, [id]);
-  return { project, error };
+
+  return { project, loading, error };
 }
 
-export function useFetchSimilarProjects(project: Idea) {
-  const [projectList, setProjectList] = useState<Idea[]>([]);
+export function useFetchSimilarProjects(
+  projectId: string,
+  technologies: string[] | undefined
+) {
   const [similarProjects, setSimilarProjects] = useState<Idea[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (project) {
-      const fetchProjects = async () => {
-        const { data, error } = await supabase.from("ideas").select("*");
-        if (error) {
-          setError(error.message);
-          setProjectList([]);
+    const fetchAndFilterProjects = async () => {
+      if (!projectId || !technologies || technologies.length === 0) return;
+
+      try {
+        const { data, error: fetchError } = await supabase
+          .from("ideas")
+          .select("*");
+
+        if (fetchError) {
+          setError(fetchError.message);
+          setSimilarProjects([]);
         } else {
-          setProjectList(data);
+          const similar = data
+            .filter(
+              (p) =>
+                p.id !== projectId &&
+                p.technologies?.some((tech: string) =>
+                  technologies.includes(tech)
+                )
+            )
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 3);
+
+          setSimilarProjects(similar);
           setError(null);
         }
-      };
-      fetchProjects();
+      } catch (err: any) {
+        setError(err.message);
+        setSimilarProjects([]);
+      }
+    };
 
-      const similar = projectList
-        ?.filter(
-          (p) =>
-            p.id !== project.id &&
-            p.tech_stack?.some((stack) => project.tech_stack?.includes(stack))
-        )
-        .sort(() => 0.5 - Math.random()) // Shuffle
-        .slice(0, 3);
+    fetchAndFilterProjects();
+  }, [projectId, JSON.stringify(technologies)]);
 
-      setSimilarProjects(similar);
-    }
-  }, [project?.id]);
   return { similarProjects, error };
 }

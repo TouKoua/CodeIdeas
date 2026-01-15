@@ -1,34 +1,28 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useFetchSimilarProjects,
   useFetchSingleProject,
 } from "../context/ProjectGetter";
-import { useAuth } from "../context/AuthContext";
 import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
+import type { Idea } from "../types"; // adjust import path as needed
 
-function Project() {
-  const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
-  const singleProject = useFetchSingleProject(id!);
-  const projectList = useFetchSimilarProjects(singleProject.project);
-  const isOwner = user && user.id === singleProject.project.creator_id;
-  const displayDate =
-    singleProject.project.updated_at || singleProject.project.created_at;
-  const isUpdated = !!singleProject.project.updated_at;
-  const formattedDate = new Date(displayDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-  const shouldShowContributorInfo = true;
-  const isEditing = false;
+function ProjectContent({ project }: { project: Idea }) {
+  const navigate = useNavigate();
+  const projectList = useFetchSimilarProjects(project.id, project.technologies);
+
+  const displayDate = project.updated_at || project.created_at;
+  const isUpdated = !!project.updated_at;
+  const formattedDate = new Date(displayDate || "").toLocaleDateString(
+    "en-US",
+    { year: "numeric", month: "long", day: "numeric" }
+  );
 
   return (
     <div className="project-page">
-      <button onClick={() => history.back()} className="back-button">
+      <button onClick={() => navigate(-1)} className="back-button">
         Back
       </button>
       <div className="grid-layout">
@@ -36,23 +30,14 @@ function Project() {
           <div className="project-section">
             <div className="project-padding">
               <div className="project-title-spacing">
-                {/*{isEditing ? displayProject : editProject}*/}
-                <h1 className="project-title">
-                  {singleProject.project?.title}
-                </h1>
+                <h1 className="project-title">{project.title}</h1>
                 <div className="badge-spacing">
                   <p>
-                    <span
-                      className={getDifficultyColor(
-                        singleProject.project.difficulty
-                      )}
-                    >
-                      {singleProject.project.difficulty}
+                    <span className={getDifficultyColor(project.difficulty)}>
+                      {project.difficulty}
                     </span>
-                    <span
-                      className={getStatusColor(singleProject.project.status)}
-                    >
-                      {singleProject.project.status}
+                    <span className={getStatusColor(project.status || "")}>
+                      {project.status}
                     </span>
                   </p>
                 </div>
@@ -63,53 +48,46 @@ function Project() {
                   {isUpdated && (
                     <span className="project-old-date">
                       (Originally posted{" "}
-                      {new Date(
-                        singleProject.project.created_at
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      {new Date(project.created_at || "").toLocaleDateString(
+                        "en-US",
+                        { year: "numeric", month: "long", day: "numeric" }
+                      )}
                       )
                     </span>
                   )}
                 </span>
               </div>
               <div className="project-description-spacing">
-                <p className="project-description">
-                  {singleProject.project.description}
-                </p>
+                <p className="project-description">{project.description}</p>
               </div>
               <div className="project-duration-label">
-                {singleProject.project.duration && (
+                {project.duration && (
                   <div className="project-duration-text">
                     <span>
                       Estimated time to complete:{" "}
-                      <strong>{singleProject.project.duration}</strong>
+                      <strong>{project.duration}</strong>
                     </span>
                   </div>
                 )}
-                {singleProject.project.team_size !== undefined &&
-                  shouldShowContributorInfo && (
-                    <div className="project-contributor-label">
-                      <span>
-                        Looking for{" "}
-                        <strong>
-                          {singleProject.project.team_size === 0
-                            ? "unlimited contributors"
-                            : `${singleProject.project.team_size} contributor${
-                                singleProject.project.team_size !== 1 ? "s" : ""
-                              }`}
-                        </strong>
-                        {singleProject.project.team_size > 0 && (
-                          <span className="project-contributor-text">
-                            (peep joined/{singleProject.project.team_size}{" "}
-                            joined)
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  )}
+                {project.team_size !== undefined && (
+                  <div className="project-contributor-label">
+                    <span>
+                      Looking for{" "}
+                      <strong>
+                        {project.team_size === 0
+                          ? "unlimited contributors"
+                          : `${project.team_size} contributor${
+                              project.team_size !== 1 ? "s" : ""
+                            }`}
+                      </strong>
+                      {project.team_size > 0 && (
+                        <span className="project-contributor-text">
+                          (peep joined/{project.team_size} joined)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
               </div>
               <div className="project-language-section">
                 <div className="project-language-spacing-1">
@@ -118,7 +96,7 @@ function Project() {
                   </span>
                 </div>
                 <div className="project-language-spacing-2">
-                  {singleProject.project.tech_stack?.map((language) => (
+                  {project.technologies?.map((language) => (
                     <Link
                       key={language}
                       to={`/search?language=${language}`}
@@ -128,11 +106,6 @@ function Project() {
                     </Link>
                   ))}
                 </div>
-              </div>
-              <div className="project-buttons">
-                <button className="project-edit">
-                  {isEditing ? "Save Project" : "Edit Project"}
-                </button>
               </div>
             </div>
           </div>
@@ -160,6 +133,21 @@ function Project() {
       </div>
     </div>
   );
+}
+
+function Project() {
+  const { id } = useParams<{ id: string }>();
+  const singleProject = useFetchSingleProject(id || "");
+
+  if (singleProject.loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!singleProject.project) {
+    return <div>Project not found</div>;
+  }
+
+  return <ProjectContent project={singleProject.project} />;
 }
 
 export default Project;
