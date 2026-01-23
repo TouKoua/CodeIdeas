@@ -15,7 +15,7 @@ export interface Idea {
   status: 'open' | 'in-progress' | 'completed';
   languages?: string[];
   technologies?: string[];
-  difficulty?: 'beginner' | 'intermediate' | 'advanced';
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
   team_size?: number;
   github_link?: string;
   duration?: string;
