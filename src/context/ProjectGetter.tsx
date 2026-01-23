@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Idea } from "../types";
 import supabase from "../services/supabaseClient";
 
@@ -60,9 +60,10 @@ export function useFetchSingleProject(id: string) {
   return { project, loading, error };
 }
 
+//Get similar projects based on tech stack
 export function useFetchSimilarProjects(
   projectId: string,
-  technologies: string[] | undefined
+  technologies: string[] | undefined,
 ) {
   const [similarProjects, setSimilarProjects] = useState<Idea[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -85,8 +86,8 @@ export function useFetchSimilarProjects(
               (p) =>
                 p.id !== projectId &&
                 p.technologies?.some((tech: string) =>
-                  technologies.includes(tech)
-                )
+                  technologies.includes(tech),
+                ),
             )
             .sort(() => 0.5 - Math.random())
             .slice(0, 3);
@@ -104,4 +105,29 @@ export function useFetchSimilarProjects(
   }, [projectId, JSON.stringify(technologies)]);
 
   return { similarProjects, error };
+}
+
+export function useFetchTeamCount(project: Idea) {
+  const [teamCount, setTeamCount] = useState<number>(0);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (project) {
+      const fetchMemberCount = async () => {
+        const { data, error } = await supabase
+          .from("team_members")
+          .select("*, teams(id)")
+          .eq("teams.id", project.id);
+        if (error) {
+          setError(error.message);
+          setTeamCount(0);
+        } else {
+          setTeamCount(data.length);
+          setError(null);
+        }
+      };
+      fetchMemberCount();
+    }
+  }, [project?.id]);
+  return { teamCount, error };
 }

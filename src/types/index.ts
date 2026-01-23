@@ -13,6 +13,7 @@ export interface Idea {
   description: string;
   category: string;
   status: 'open' | 'in-progress' | 'completed';
+  languages?: string[];
   technologies?: string[];
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
   team_size?: number;

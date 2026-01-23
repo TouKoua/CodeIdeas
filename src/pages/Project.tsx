@@ -2,23 +2,26 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useFetchSimilarProjects,
   useFetchSingleProject,
+  useFetchTeamCount,
 } from "../context/ProjectGetter";
 import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
 import type { Idea } from "../types"; // adjust import path as needed
+import { useAuth } from "../context/AuthContext";
 
 function ProjectContent({ project }: { project: Idea }) {
+  const { user } = useAuth();
+  const isOwner = user?.id === project.creator_id;
   const navigate = useNavigate();
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
-
-  const displayDate = project.updated_at || project.created_at;
-  const isUpdated = !!project.updated_at;
-  const formattedDate = new Date(displayDate || "").toLocaleDateString(
-    "en-US",
-    { year: "numeric", month: "long", day: "numeric" }
-  );
+  //const teamCount = useFetchTeamCount(singleProject.project);
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 
   return (
     <div className="project-page">
@@ -44,13 +47,13 @@ function ProjectContent({ project }: { project: Idea }) {
               </div>
               <div className="project-update">
                 <span>
-                  {isUpdated ? "Updated" : "Posted"} on {formattedDate}
-                  {isUpdated && (
+                  {project.updated_at ? "Updated" : "Posted"} on {formattedDate}
+                  {project.updated_at && (
                     <span className="project-old-date">
                       (Originally posted{" "}
                       {new Date(project.created_at || "").toLocaleDateString(
                         "en-US",
-                        { year: "numeric", month: "long", day: "numeric" }
+                        { year: "numeric", month: "long", day: "numeric" },
                       )}
                       )
                     </span>
@@ -83,6 +86,26 @@ function ProjectContent({ project }: { project: Idea }) {
                       {project.team_size > 0 && (
                         <span className="project-contributor-text">
                           (peep joined/{project.team_size} joined)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                )}
+                {project.team_size !== undefined && isOwner && (
+                  <div className="project-contributor-label">
+                    <span>
+                      Looking for{" "}
+                      <strong>
+                        {project.team_size === 0
+                          ? "unlimited contributors"
+                          : `${project.team_size} contributor${
+                              project.team_size !== 1 ? "s" : ""
+                            }`}
+                      </strong>
+                      {project.team_size > 0 && (
+                        <span className="project-contributor-text">
+                          (peeps/
+                          {project.team_size} joined)
                         </span>
                       )}
                     </span>
