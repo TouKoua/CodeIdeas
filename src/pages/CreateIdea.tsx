@@ -163,9 +163,9 @@ function CreateIdea() {
             disabled={loading}
           >
             <option value="">Select a difficulty</option>
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
+            <option value="Beginner">Beginner</option>
+            <option value="Intermediate">Intermediate</option>
+            <option value="Advanced">Advanced</option>
             <option value="Expert">Expert</option>
           </select>
           {/* Team Size Field */}

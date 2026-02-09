@@ -16,7 +16,6 @@ export interface Idea {
   languages?: string[];
   technologies?: string[];
   difficulty?: 'beginner' | 'intermediate' | 'advanced';
-  team_size?: number;
   github_link?: string;
   duration?: string;
   is_archived: boolean;
@@ -29,6 +28,7 @@ export interface Team {
   idea_id: string;
   name: string;
   description?: string;
+  team_size?: number;
   created_at: string;
 }
 
@@ -38,4 +38,14 @@ export interface TeamMember {
   user_id: string;
   role: 'creator' | 'member';
   joined_at: string;
+}
+
+export interface JoinRequest {
+  id: string;
+  team_id: string;
+  user: UserProfile;
+  status: 'pending' | 'approved' | 'rejected';
+  request_message?: string;
+  requested_at: string;
+  responded_at?: string;
 }

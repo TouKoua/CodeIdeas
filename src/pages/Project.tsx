@@ -72,45 +72,6 @@ function ProjectContent({ project }: { project: Idea }) {
                     </span>
                   </div>
                 )}
-                {project.team_size !== undefined && (
-                  <div className="project-contributor-label">
-                    <span>
-                      Looking for{" "}
-                      <strong>
-                        {project.team_size === 0
-                          ? "unlimited contributors"
-                          : `${project.team_size} contributor${
-                              project.team_size !== 1 ? "s" : ""
-                            }`}
-                      </strong>
-                      {project.team_size > 0 && (
-                        <span className="project-contributor-text">
-                          (peep joined/{project.team_size} joined)
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                )}
-                {project.team_size !== undefined && isOwner && (
-                  <div className="project-contributor-label">
-                    <span>
-                      Looking for{" "}
-                      <strong>
-                        {project.team_size === 0
-                          ? "unlimited contributors"
-                          : `${project.team_size} contributor${
-                              project.team_size !== 1 ? "s" : ""
-                            }`}
-                      </strong>
-                      {project.team_size > 0 && (
-                        <span className="project-contributor-text">
-                          (peeps/
-                          {project.team_size} joined)
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                )}
               </div>
               <div className="project-language-section">
                 <div className="project-language-spacing-1">

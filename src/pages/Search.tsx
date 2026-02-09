@@ -20,13 +20,16 @@ function Search() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchQuery(value);
-    let filtered = projectList.projects.filter((project) =>
-      project.title.toLowerCase().includes(value.toLowerCase()),
+    let filtered = projectList.projects.filter(
+      (project) =>
+        project.title.toLowerCase().includes(value.toLowerCase()) &&
+        project.difficulty !== undefined,
     );
     if (filters.difficulty && filters.difficulty.length > 0) {
-      filtered = filtered.filter((project) =>
-        filters.difficulty.includes(project.difficulty),
-      );
+      filtered = filtered.filter((project) => {
+        if (project.difficulty === undefined) return false;
+        return filters.difficulty.includes(project.difficulty);
+      });
     }
     if (filters.languages && filters.languages.length > 0) {
       filtered = filtered.filter((project) =>
