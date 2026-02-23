@@ -12,7 +12,7 @@ function SignUp() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUp, createUserProfile } = useAuth(); // Get signUp and createUserProfile functions from context
+  const { signUp } = useAuth(); // Get signUp function from context
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,12 +20,11 @@ function SignUp() {
     setLoading(true);
     setError("");
     try {
-      const newUser = await signUp(email, password);
-      if (newUser) {
-        await createUserProfile(newUser.id, firstName, lastName);
-      }
+      const newUser = await signUp(email, password, firstName, lastName);
+      console.log("New user created:", newUser);
       navigate("/dashboard"); // Redirect to home on successful signup
     } catch (err: any) {
+      console.log("Error during sign up:", err);
       setError(err.message);
     } finally {
       setLoading(false);

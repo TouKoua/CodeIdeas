@@ -6,12 +6,12 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<User | null>;
-  createUserProfile: (
-    userID: string,
-    firstName: string,
-    lastName: string,
-  ) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    first_name: string,
+    last_name: string,
+  ) => Promise<User | null>;
   signOut: () => Promise<void>;
 };
 
@@ -46,28 +46,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (
+    email: string,
+    password: string,
+    first_name: string,
+    last_name: string,
+  ) => {
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        data: {
+          first_name,
+          last_name,
+        },
+      },
     });
-    if (error) throw error;
+    console.log("Sign Up Response:", data, error);
+    if (error) throw "Sign Up Error: " + error.message;
     setLoading(false);
     return data.user;
-  };
-
-  const createUserProfile = async (
-    userID: string,
-    firstName: string,
-    lastName: string,
-  ) => {
-    const { error: profileError } = await supabase
-      .from("user_profiles")
-      .insert([{ id: userID, first_name: firstName, last_name: lastName }]);
-    if (profileError) {
-      throw profileError;
-    }
   };
 
   const signOut = async () => {
@@ -77,9 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
   return (
-    <AuthContext.Provider
-      value={{ user, loading, signIn, signUp, createUserProfile, signOut }}
-    >
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
