@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react";
-import type {
-  Idea,
-  JoinRequest,
-  Team,
-  TeamMember,
-  UserProfile,
-} from "../types";
+import type { Idea, JoinRequest, Team, TeamMember } from "../types";
 import supabase from "../services/supabaseClient";
 
 // Get project list from Supabase

@@ -2,18 +2,14 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useFetchSimilarProjects,
   useFetchSingleProject,
-  useFetchTeamCount,
 } from "../context/ProjectGetter";
 import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
 import type { Idea } from "../types"; // adjust import path as needed
-import { useAuth } from "../context/AuthContext";
 
 function ProjectContent({ project }: { project: Idea }) {
-  const { user } = useAuth();
-  const isOwner = user?.id === project.creator_id;
   const navigate = useNavigate();
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
   //const teamCount = useFetchTeamCount(singleProject.project);

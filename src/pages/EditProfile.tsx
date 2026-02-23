@@ -66,7 +66,8 @@ function EditProfile() {
       const { error: updateError } = await supabase
         .from("user_profiles")
         .update({
-          full_name: userData?.full_name,
+          first_name: userData?.first_name,
+          last_name: userData?.last_name,
           bio: userData?.bio,
           skills: skills,
         })
@@ -85,16 +86,28 @@ function EditProfile() {
     <div className="edit-profile-page">
       <div className="edit-profile-container">
         <h1>Edit Profile</h1>
-        {userData?.full_name && (
+        {userData?.first_name && userData?.last_name && (
           <form onSubmit={handleSubmit}>
-            {/* Full Name Field */}
-            <label htmlFor="fullName">Full Name</label>
+            {/* First Name Field */}
+            <label htmlFor="firstName">First Name</label>
             <input
-              id="fullName"
+              id="firstName"
               type="text"
-              value={userData.full_name}
+              value={userData.first_name}
               onChange={(e) =>
-                setUserData({ ...userData, full_name: e.target.value })
+                setUserData({ ...userData, first_name: e.target.value })
+              }
+              disabled={loading}
+            />
+
+            {/* Last Name Field */}
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              value={userData.last_name}
+              onChange={(e) =>
+                setUserData({ ...userData, last_name: e.target.value })
               }
               disabled={loading}
             />

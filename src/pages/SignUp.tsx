@@ -7,10 +7,12 @@ function SignUp() {
   // State for form inputs and error handling
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUp } = useAuth(); // Get signUp function from context
+  const { signUp, createUserProfile } = useAuth(); // Get signUp and createUserProfile functions from context
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,7 +20,10 @@ function SignUp() {
     setLoading(true);
     setError("");
     try {
-      await signUp(email, password);
+      const newUser = await signUp(email, password);
+      if (newUser) {
+        await createUserProfile(newUser.id, firstName, lastName);
+      }
       navigate("/dashboard"); // Redirect to home on successful signup
     } catch (err: any) {
       setError(err.message);
@@ -36,6 +41,30 @@ function SignUp() {
         </p>
 
         <form className="signup-form" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="first_name">First Name</label>
+            <input
+              id="first_name"
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First Name"
+              disabled={loading}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_name">Last Name</label>
+            <input
+              id="last_name"
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last Name"
+              disabled={loading}
+              required
+            />
+          </div>
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input

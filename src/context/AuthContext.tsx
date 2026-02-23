@@ -6,7 +6,12 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<User | null>;
+  createUserProfile: (
+    userID: string,
+    firstName: string,
+    lastName: string,
+  ) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -24,12 +29,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       (_event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
-      }
+      },
     );
     return () => {
       authListener?.subscription.unsubscribe();
     };
   }, []);
+
   const signIn = async (email: string, password: string) => {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({
@@ -39,12 +45,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (error) throw error;
     setLoading(false);
   };
+
   const signUp = async (email: string, password: string) => {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
     if (error) throw error;
     setLoading(false);
+    return data.user;
   };
+
+  const createUserProfile = async (
+    userID: string,
+    firstName: string,
+    lastName: string,
+  ) => {
+    const { error: profileError } = await supabase
+      .from("user_profiles")
+      .insert([{ id: userID, first_name: firstName, last_name: lastName }]);
+    if (profileError) {
+      throw profileError;
+    }
+  };
+
   const signOut = async () => {
     setLoading(true);
     const { error } = await supabase.auth.signOut();
@@ -52,7 +77,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, createUserProfile, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );

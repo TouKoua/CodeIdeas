@@ -1,6 +1,7 @@
 export interface UserProfile {
   id: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
   bio?: string;
   avatar_url?: string;
   skills?: string[];
