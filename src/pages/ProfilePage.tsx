@@ -3,14 +3,7 @@ import { useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import { useAuth } from "../context/AuthContext";
 import "./ProfilePage.css";
-
-interface UserProfile {
-  id: string;
-  full_name: string;
-  bio?: string;
-  avatar_url?: string;
-  skills?: string[];
-}
+import type { UserProfile } from "../types/index";
 
 function ProfilePage({ user_id }: { user_id: string | null }) {
   const { user } = useAuth();
@@ -59,14 +52,16 @@ function ProfilePage({ user_id }: { user_id: string | null }) {
   }
   return (
     <div className="profile-page">
-      {userData?.full_name && (
+      {userData?.first_name && (
         <div>
           <div className="profile-header">
-            <h1>{userData?.full_name}</h1>
+            <h1>
+              {userData?.first_name} {userData?.last_name}
+            </h1>
 
             <img
               src={userData?.avatar_url || "/default-avatar.png"}
-              alt={`${userData?.full_name}'s avatar`}
+              alt={`${userData?.first_name} ${userData?.last_name}'s avatar`}
               className="profile-avatar"
             />
 

@@ -60,7 +60,6 @@ function CreateIdea() {
             category,
             technologies: techStack,
             difficulty: difficulty_level,
-            team_size: teamSize,
             github_link: githubLink,
             duration,
             creator_id: user?.id,

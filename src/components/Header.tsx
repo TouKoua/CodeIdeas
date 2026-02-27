@@ -37,7 +37,7 @@ function Header() {
               Logout
             </button>
           ) : (
-            <Link to="/signup" className="nav-link">
+            <Link to="/login" className="nav-link">
               <button className="cta-button">Share Your Idea</button>
             </Link>
           )}

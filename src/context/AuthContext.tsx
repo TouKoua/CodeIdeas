@@ -12,6 +12,7 @@ type AuthContextType = {
     first_name: string,
     last_name: string,
   ) => Promise<User | null>;
+  signUpWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -75,8 +76,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (error) throw error;
     setLoading(false);
   };
+
+  const signUpWithGithub = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "github",
+    });
+    if (error) throw error;
+    setLoading(false);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, signOut, signUpWithGithub }}
+    >
       {children}
     </AuthContext.Provider>
   );

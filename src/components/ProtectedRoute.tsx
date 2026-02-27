@@ -9,7 +9,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
     return <div>Loading...</div>;
   }
   if (!user) {
-    return <Navigate to="/signup" replace />;
+    return <Navigate to="/login" replace />;
   }
   return children;
 }

@@ -9,7 +9,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signIn } = useAuth();
+  const { signIn, signUpWithGithub } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,6 +21,22 @@ function Login() {
       navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      await signUpWithGithub();
+      // Note: With OAuth, the user is redirected to GitHub and then back to your app.
+      // The session is handled by Supabase, so we don't need to do anything else here.
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false); // Stop loading if there's an error
     } finally {
       setLoading(false);
     }
@@ -66,6 +82,19 @@ function Login() {
           </button>
         </form>
 
+        <div className="divider">OR</div>
+
+        <button
+          className="github-button"
+          onClick={handleGithubSignIn}
+          disabled={loading}
+        >
+          {loading ? "Redirecting..." : "Sign In with GitHub"}
+        </button>
+
+        <div className="login-footer">
+          Forgot password? <a href="/reset-password">Reset it</a>
+        </div>
         <div className="login-footer">
           Don't have an account? <a href="/signup">Sign Up</a>
         </div>
