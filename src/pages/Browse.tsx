@@ -17,7 +17,7 @@ function Browse() {
   const latestProjects = [...projectList.projects]
     .sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
     )
     .slice(0, 12);
 
@@ -44,7 +44,7 @@ function Browse() {
         <div className="browse-top-design">
           <h1>
             Explore Project Ideas
-            <Link to="/signup" className="btn btn-primary">
+            <Link to="/login" className="btn btn-primary">
               Refresh
             </Link>
           </h1>

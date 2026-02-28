@@ -4,15 +4,15 @@ import { useState } from "react";
 import "./Login.css";
 
 function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  //const [email, setEmail] = useState("");
+  //const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signIn, signUpWithGithub } = useAuth();
+  const { signUpWithGithub } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /*const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -24,7 +24,7 @@ function Login() {
     } finally {
       setLoading(false);
     }
-  };
+  };*/
 
   const handleGithubSignIn = async () => {
     setLoading(true);
@@ -41,6 +41,13 @@ function Login() {
       setLoading(false);
     }
   };
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    setError("");
+    {
+      /* Similar to GitHub, but for Google OAuth */
+    }
+  };
 
   return (
     <div className="login-page">
@@ -48,39 +55,13 @@ function Login() {
         <h1>Welcome Back</h1>
         <p className="login-subtitle">Sign in to your CodeIdeas account</p>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email Address</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              disabled={loading}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              disabled={loading}
-              required
-            />
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-
-          <button type="submit" className="login-button" disabled={loading}>
-            {loading ? "Logging In..." : "Log In"}
-          </button>
-        </form>
+        <button
+          className="google-button"
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+        >
+          {loading ? "Redirecting..." : "Sign In with Google"}
+        </button>
 
         <div className="divider">OR</div>
 

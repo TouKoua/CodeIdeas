@@ -51,7 +51,7 @@ function CreateIdea() {
       const duration = durationValue
         ? `${durationValue} ${durationUnit}`
         : null;
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from("ideas")
         .insert([
           {
@@ -67,9 +67,33 @@ function CreateIdea() {
         ])
         .select();
       if (error) {
-        throw error;
+        throw "Idea Creation Failure: " + error.message;
       }
-      navigate("/dashboard");
+
+      const ideaId = data[0].id; // Get the ID of the newly created idea
+      const { data: teamData, error: teamError } = await supabase
+        .from("teams")
+        .insert([
+          {
+            idea_id: ideaId,
+            name: `${title} Team`,
+            team_size: teamSize,
+          },
+        ])
+        .select();
+      if (teamError) {
+        throw "Team Creation Failure: " + teamError.message;
+      }
+
+      const teamId = teamData[0].id; // Get the ID of the newly created team
+      const { error: memberError } = await supabase
+        .from("team_members")
+        .insert([{ team_id: teamId, user_id: user?.id, role: "creator" }]);
+      if (memberError) {
+        throw "Team Membership Failure: " + memberError.message;
+      }
+
+      navigate("/ideas/" + ideaId); // Redirect to the newly created idea's page
     } catch (err: any) {
       setError(err.message);
     } finally {
