@@ -79,6 +79,7 @@ function Login() {
         <div className="login-footer">
           Don't have an account? <a href="/signup">Sign Up</a>
         </div>
+        {error && <div className="error-message">{error}</div>}
       </div>
     </div>
   );

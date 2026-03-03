@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Idea, JoinRequest, Team, TeamMember } from "../types";
 import supabase from "../services/supabaseClient";
+import type { User } from "@supabase/supabase-js";
 
 // Get project list from Supabase
 export default function useFetchProjectList() {
@@ -105,6 +106,20 @@ export function useFetchSimilarProjects(
   }, [projectId, JSON.stringify(technologies)]);
 
   return { similarProjects, error };
+}
+
+// Get user's ideas from Supabase
+export async function fetchUserIdeas(user: User | null) {
+  if (!user) return [];
+  const { data, error } = await supabase
+    .from("ideas")
+    .select("*")
+    .eq("creator_id", user.id);
+  if (error) {
+    console.error("Error fetching user's ideas:", error);
+    return [];
+  }
+  return data;
 }
 
 export function useFetchTeamCount(team: Team) {

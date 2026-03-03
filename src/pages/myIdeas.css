@@ -1,0 +1,61 @@
+.my-ideas-page {
+  max-width: 1200px;
+  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.my-ideas-page h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.my-ideas-page > p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.ProjectCard-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.ProjectCard {
+  height: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ProjectCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Empty state styling */
+.my-ideas-page > p:last-child {
+  text-align: center;
+  font-size: 1rem;
+  color: #999;
+  padding: 2rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .my-ideas-page {
+    padding: 1rem;
+  }
+
+  .my-ideas-page h1 {
+    font-size: 1.8rem;
+  }
+
+  .ProjectCard-container {
+    grid-template-columns: 1fr;
+  }
+}
