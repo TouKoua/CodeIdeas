@@ -24,7 +24,7 @@ function Dashboard() {
           <div className="dashboard-card">
             <h2>Collaborations</h2>
             <p>See all the projects you're currently collaborating on.</p>
-            <a href="/collaborations" className="dashboard-card-action">
+            <a href="/joinRequests" className="dashboard-card-action">
               View Collaborations
             </a>
           </div>

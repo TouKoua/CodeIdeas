@@ -84,7 +84,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     });
-    console.log("Sign Up Response:", data, error);
     if (error) throw "Sign Up Error: " + error.message;
     setLoading(false);
     return data.user;

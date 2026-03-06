@@ -1,5 +1,4 @@
 import { useAuth } from "../context/AuthContext.tsx";
-//import { useNavigate } from "react-router-dom";
 import { fetchUserIdeas } from "../context/ProjectGetter.tsx";
 import { useState, useEffect } from "react";
 import "./myIdeas.css";
@@ -9,7 +8,6 @@ import { Link } from "react-router-dom";
 
 function MyIdeas() {
   const { user, userProfile } = useAuth();
-  //const navigate = useNavigate();
   const [ideas, setIdeas] = useState<Idea[] | null>(null);
 
   useEffect(() => {
