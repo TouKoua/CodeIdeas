@@ -9,7 +9,7 @@ function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { signUpWithGithub } = useAuth();
+  const { signUpWithGithub, signUpWithGoogle } = useAuth();
   const navigate = useNavigate();
 
   /*const handleSubmit = async (e: React.FormEvent) => {
@@ -44,8 +44,16 @@ function Login() {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setError("");
-    {
-      /* Similar to GitHub, but for Google OAuth */
+    try {
+      await signUpWithGoogle();
+      // Note: With OAuth, the user is redirected to Google and then back to your app.
+      // The session is handled by Supabase, so we don't need to do anything else here.
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.message);
+      setLoading(false); // Stop loading if there's an error
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -3,18 +3,22 @@ import { useFetchUserPendingRequests } from "../context/ProjectGetter.tsx";
 import { useState, useEffect } from "react";
 import "./joinRequests.css";
 import type { JoinRequest } from "../types/index.ts";
-import ProjectCard from "../components/ProjectCard";
-import { Link } from "react-router-dom";
 
 function JoinRequests() {
   const { user, userProfile } = useAuth();
-  const [requests, setRequests] = useState<JoinRequest[] | null>(null);
+  const [requests, setRequests] = useState<JoinRequest[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch user's join requests from Supabase
     const fetchJoinRequests = async () => {
-      const userJoinRequests = useFetchUserPendingRequests(user?.id || "");
-      setRequests(userJoinRequests);
+      const {pendingRequests, error} = useFetchUserPendingRequests(user?.id || "");
+      if (pendingRequests) {
+        setRequests(pendingRequests);
+      } else {
+        setError(error || "Failed to fetch join requests.");
+        setRequests([]);
+      }
     };
     fetchJoinRequests();
   }, [user]);
@@ -27,12 +31,15 @@ function JoinRequests() {
         <div className="ProjectCard-container">
           {requests.map((request) => (
             <div key={request.id} className="ProjectCard">
-              <Link to={`/project/${request.id}`} className="project-link">
-                <ProjectCard project={request} />
-              </Link>
+              <div className="request-info">
+                <p>Project: {request.team_id}</p>
+                <p>Status: {request.status}</p>
+              </div>
             </div>
           ))}
         </div>
+      ) : error ? (
+        <p>{error}</p>
       ) : (
         <p>No join requests found.</p>
       )}
