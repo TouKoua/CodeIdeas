@@ -43,7 +43,7 @@ export interface TeamMember {
 
 export interface JoinRequest {
   id: string;
-  team_id: string;
+  team: Team;
   user: UserProfile;
   status: 'pending' | 'approved' | 'rejected';
   request_message?: string;

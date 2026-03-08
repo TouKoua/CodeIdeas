@@ -3,43 +3,156 @@ import { useFetchUserPendingRequests } from "../context/ProjectGetter.tsx";
 import { useState, useEffect } from "react";
 import "./joinRequests.css";
 import type { JoinRequest } from "../types/index.ts";
+import supabase from "../services/supabaseClient.ts";
 
 function JoinRequests() {
   const { user, userProfile } = useAuth();
-  const [requests, setRequests] = useState<JoinRequest[]>([]);
+  const [teamRequests, setTeamRequests] = useState<JoinRequest[]>([]);
+  const { pendingRequests, error: pendingRequestsError } =
+    useFetchUserPendingRequests(user?.id || "");
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Fetch user's join requests from Supabase
-    const fetchJoinRequests = async () => {
-      const {pendingRequests, error} = useFetchUserPendingRequests(user?.id || "");
-      if (pendingRequests) {
-        setRequests(pendingRequests);
-      } else {
-        setError(error || "Failed to fetch join requests.");
-        setRequests([]);
+  const fetchOwnProjectJoinRequests = async () => {
+    try {
+      const { data: teams, error: teamsError } = await supabase
+        .from("team_members")
+        .select("team_id")
+        .eq("user_id", user?.id)
+        .eq("role", "creator");
+
+      if (teamsError) {
+        throw teamsError.message;
       }
-    };
-    fetchJoinRequests();
+
+      if (!teams || teams.length === 0) {
+        setTeamRequests([]);
+        return;
+      }
+
+      const teamIds = teams.map((team) => team.team_id);
+      if (teamIds.length === 0) {
+        setTeamRequests([]);
+        return;
+      }
+
+      const { data: joinRequests, error: requestsError } = await supabase
+        .from("join_requests")
+        .select("*, user_profiles(*), teams(*)")
+        .in("team_id", teamIds)
+        .eq("status", "pending");
+      if (requestsError) {
+        throw requestsError.message;
+      }
+      const enrichedRequests = joinRequests.map((request) => ({
+        ...request,
+        user: request.user_profiles,
+        team: request.teams,
+      }));
+      setTeamRequests(enrichedRequests);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+      setTeamRequests([]);
+      return;
+    }
+  };
+  useEffect(() => {
+    // Fetch user's join requests to THEIR OWN projects from Supabase
+    fetchOwnProjectJoinRequests();
   }, [user]);
+
+  const handleApprove = async (requestId: string) => {
+    const { error } = await supabase
+      .from("join_requests")
+      .update({ status: "approved", responded_at: new Date() })
+      .eq("id", requestId);
+
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    // Refresh data after
+    fetchOwnProjectJoinRequests();
+  };
+
+  const handleReject = async (requestId: string) => {
+    const { error } = await supabase
+      .from("join_requests")
+      .update({ status: "rejected", responded_at: new Date() })
+      .eq("id", requestId);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    // Refresh data after
+    fetchOwnProjectJoinRequests();
+  };
 
   return (
     <div className="join-requests-page">
       <h1>Join Requests</h1>
       <p>Welcome, {userProfile?.first_name}! Here are your join requests.</p>
-      {requests && requests.length > 0 ? (
+
+      <h2>Requests to Your Projects</h2>
+      {teamRequests && teamRequests.length > 0 ? (
         <div className="ProjectCard-container">
-          {requests.map((request) => (
+          {teamRequests.map((request) => (
             <div key={request.id} className="ProjectCard">
               <div className="request-info">
-                <p>Project: {request.team_id}</p>
+                <p>Project: {request.team.name}</p>
+                <p>
+                  Description:{" "}
+                  {request.team.description || "No description provided."}
+                </p>
+                <p>Team Size: {request.team.team_size || "N/A"}</p>
+                <p>
+                  Message: {request.request_message || "No message provided."}
+                </p>
+                <p>
+                  Requested At:{" "}
+                  {new Date(request.requested_at).toLocaleString()}
+                </p>
+                <p>Requester: {request.user.first_name}</p>
                 <p>Status: {request.status}</p>
+              </div>
+              <div className="request-actions">
+                <button onClick={() => handleApprove(request.id)}>
+                  Approve
+                </button>
+                <button onClick={() => handleReject(request.id)}>Reject</button>
               </div>
             </div>
           ))}
         </div>
       ) : error ? (
         <p>{error}</p>
+      ) : (
+        <p>No join requests to your projects found.</p>
+      )}
+
+      <h2>Your Join Requests to Other Projects</h2>
+      {pendingRequests && pendingRequests.length > 0 ? (
+        <div className="ProjectCard-container">
+          {pendingRequests.map((request) => (
+            <div key={request.id} className="ProjectCard">
+              <div className="request-info">
+                <p>Project: {request.team.name}</p>
+                <p>
+                  Description:{" "}
+                  {request.team.description || "No description provided."}
+                </p>
+                <p>Team Size: {request.team.team_size || "N/A"}</p>
+                <p>
+                  Requested At:{" "}
+                  {new Date(request.requested_at).toLocaleString()}
+                </p>
+                <p>Status: {request.status}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : pendingRequestsError ? (
+        <p>{pendingRequestsError}</p>
       ) : (
         <p>No join requests found.</p>
       )}

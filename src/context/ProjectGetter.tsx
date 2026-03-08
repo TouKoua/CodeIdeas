@@ -198,7 +198,7 @@ export function useFetchUserPendingRequests(userID: string) {
       try {
         const { data, error: fetchError } = await supabase
           .from("join_requests")
-          .select("*, user_profiles(*)")
+          .select("*, teams(*)")
           .eq("user_id", userID)
           .eq("status", "pending");
 
@@ -208,7 +208,7 @@ export function useFetchUserPendingRequests(userID: string) {
         } else {
           const enrichedPending = data.map((request) => ({
             ...request,
-            user: request.user_profiles,
+            team: request.teams,
           }));
           setPendingRequests(enrichedPending);
           setError(null);
