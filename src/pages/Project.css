@@ -202,3 +202,26 @@
 .similar-project-spacing {
     margin-top: 1rem;
 }
+
+.request-join-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.request-join-button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.request-join-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
