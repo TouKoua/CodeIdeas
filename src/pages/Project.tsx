@@ -8,7 +8,7 @@ import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
 import type { Idea } from "../types"; // adjust import path as needed
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import supabase from "../services/supabaseClient";
 
@@ -18,12 +18,28 @@ function ProjectContent({ project }: { project: Idea }) {
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
+  const [isTeamMember, setIsTeamMember] = useState(false);
   //const teamCount = useFetchTeamCount(singleProject.project);
   const formattedDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+
+  useEffect(() => {
+    const checkMembership = async () => {
+      const { data } = await supabase
+        .from("team_members")
+        .select("id")
+        .eq("team_id", teamId)
+        .eq("user_id", user?.id)
+        .single();
+
+      setIsTeamMember(!!data);
+    };
+
+    if (user?.id && teamId) checkMembership();
+  }, [user, teamId]);
 
   const handleJoinRequest = async (projectID: string) => {
     // Implement join request logic here, e.g., open a modal or send a request to the backend
@@ -33,10 +49,9 @@ function ProjectContent({ project }: { project: Idea }) {
       return;
     }
 
-    console.log(projectID);
-
     setLoading(true);
     try {
+      // fetch the team information
       const { data: team, error: teamError } = await supabase
         .from("teams")
         .select("id")
@@ -44,6 +59,25 @@ function ProjectContent({ project }: { project: Idea }) {
         .single();
       if (teamError) throw teamError;
 
+      // check if an existing request for this user to this team already exists
+      const { data: existingRequest, error: existingRequestError } =
+        await supabase
+          .from("join_requests")
+          .select("*")
+          .eq("team_id", team.id)
+          .eq("user_id", user.id)
+          .single();
+      if (existingRequestError) {
+        throw existingRequestError;
+      }
+
+      if (existingRequest) {
+        alert("You have already sent a join request for this project.");
+        setLoading(false);
+        return;
+      }
+
+      // Create the join request
       const { error: requestError } = await supabase
         .from("join_requests")
         .insert({
