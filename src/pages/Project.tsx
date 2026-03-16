@@ -7,7 +7,7 @@ import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
-import type { Idea } from "../types"; // adjust import path as needed
+import type { Idea, Team } from "../types"; // adjust import path as needed
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import supabase from "../services/supabaseClient";
@@ -18,70 +18,92 @@ function ProjectContent({ project }: { project: Idea }) {
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
-  const [isTeamMember, setIsTeamMember] = useState(false);
-  //const teamCount = useFetchTeamCount(singleProject.project);
   const formattedDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
+  const [teamInfo, setTeamInfo] = useState<Team | null>(null);
+  const [isTeamMember, setIsTeamMember] = useState(false);
+  const [hasPendingRequest, setHasPendingRequest] = useState(false);
+  const [isTeamFull, setIsTeamFull] = useState(false);
 
   useEffect(() => {
-    const checkMembership = async () => {
-      const { data } = await supabase
-        .from("team_members")
-        .select("id")
-        .eq("team_id", teamId)
-        .eq("user_id", user?.id)
-        .single();
+    // Check if the user has already sent a join request for this project
+    const checkUserStatus = async () => {
+      try {
+        // fetch the team information for the project
+        const { data: team, error: teamError } = await supabase
+          .from("teams")
+          .select("*")
+          .eq("idea_id", project.id)
+          .single();
+        if (teamError) throw teamError;
+        setTeamInfo(team);
 
-      setIsTeamMember(!!data);
+        // check if the user is already a member of the team
+        const { data: teamMember, error: teamMembersError } = await supabase
+          .from("team_members")
+          .select("*")
+          .eq("team_id", team.id)
+          .eq("user_id", user?.id)
+          .single();
+        if (teamMembersError) throw teamMembersError;
+        if (teamMember) {
+          setIsTeamMember(true);
+          setLoading(false);
+          return;
+        }
+
+        // check if an existing request for this user to this team already exists
+        const { data: existingRequest, error: existingRequestError } =
+          await supabase
+            .from("join_requests")
+            .select("*")
+            .eq("team_id", team.id)
+            .eq("user_id", user?.id)
+            .single();
+        if (existingRequestError) throw existingRequestError;
+        if (existingRequest) {
+          setHasPendingRequest(true);
+          setLoading(false);
+          return;
+        }
+
+        // check if the team is already full
+        const { data: teamMembers, error: teamMembersListError } =
+          await supabase
+            .from("team_members")
+            .select("*")
+            .eq("team_id", team.id);
+        if (teamMembersListError) throw teamMembersListError;
+        if (teamMembers && teamMembers.length >= team.team_size) {
+          setIsTeamFull(true);
+          setLoading(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Error checking existing join request:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+    checkUserStatus();
+  }, [project.id, user?.id]);
 
-    if (user?.id && teamId) checkMembership();
-  }, [user, teamId]);
-
-  const handleJoinRequest = async (projectID: string) => {
+  const handleJoinRequest = async () => {
     // Implement join request logic here, e.g., open a modal or send a request to the backend
     if (!user) {
       alert("Please log in to send a join request.");
       navigate("/login");
       return;
     }
-
-    setLoading(true);
     try {
-      // fetch the team information
-      const { data: team, error: teamError } = await supabase
-        .from("teams")
-        .select("id")
-        .eq("idea_id", projectID)
-        .single();
-      if (teamError) throw teamError;
-
-      // check if an existing request for this user to this team already exists
-      const { data: existingRequest, error: existingRequestError } =
-        await supabase
-          .from("join_requests")
-          .select("*")
-          .eq("team_id", team.id)
-          .eq("user_id", user.id)
-          .single();
-      if (existingRequestError) {
-        throw existingRequestError;
-      }
-
-      if (existingRequest) {
-        alert("You have already sent a join request for this project.");
-        setLoading(false);
-        return;
-      }
-
       // Create the join request
       const { error: requestError } = await supabase
         .from("join_requests")
         .insert({
-          team_id: team.id,
+          team_id: teamInfo?.id,
           user_id: user.id,
           status: "pending",
           request_message: "",
@@ -169,12 +191,20 @@ function ProjectContent({ project }: { project: Idea }) {
                 </div>
               </div>
               <div className="join-button-section">
-                <button
-                  onClick={() => handleJoinRequest(project.id)}
-                  disabled={loading || requestSent}
-                >
-                  {requestSent ? "Request Sent" : "Join Project"}
-                </button>
+                {isTeamMember ? (
+                  <p>You're already a member</p>
+                ) : hasPendingRequest ? (
+                  <p>Your request is pending</p>
+                ) : isTeamFull ? (
+                  <p>This team is full</p>
+                ) : (
+                  <button
+                    onClick={handleJoinRequest}
+                    disabled={loading || requestSent}
+                  >
+                    {requestSent ? "Request Sent" : "Join Project"}
+                  </button>
+                )}
               </div>
             </div>
           </div>

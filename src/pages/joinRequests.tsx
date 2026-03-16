@@ -21,7 +21,7 @@ function JoinRequests() {
         .eq("role", "creator");
 
       if (teamsError) {
-        throw teamsError.message;
+        throw new Error(teamsError.message);
       }
 
       if (!teams || teams.length === 0) {
@@ -41,7 +41,7 @@ function JoinRequests() {
         .in("team_id", teamIds)
         .eq("status", "pending");
       if (requestsError) {
-        throw requestsError.message;
+        throw new Error(requestsError.message);
       }
       const enrichedRequests = joinRequests.map((request) => ({
         ...request,
@@ -57,21 +57,37 @@ function JoinRequests() {
     }
   };
   useEffect(() => {
-    // Fetch user's join requests to THEIR OWN projects from Supabase
+    // Fetch other's join requests to user's OWN projects from Supabase
     fetchOwnProjectJoinRequests();
   }, [user]);
 
-  const handleApprove = async (requestId: string) => {
+  const handleApprove = async (request: JoinRequest) => {
     const { error } = await supabase
       .from("join_requests")
       .update({ status: "approved", responded_at: new Date() })
-      .eq("id", requestId);
+      .eq("id", request.id);
+    const { error: addTeammateError } = await supabase
+      .from("team_members")
+      .insert([
+        {
+          team_id: request.team.id,
+          user_id: request.user.id,
+          role: "member",
+        },
+      ]);
+    if (addTeammateError) {
+      setError(addTeammateError.message);
+      return;
+    }
 
     if (error) {
       setError(error.message);
       return;
     }
     // Refresh data after
+    alert(
+      "Request approved! The requester will be notified and added to the team if they are not already a member.",
+    );
     fetchOwnProjectJoinRequests();
   };
 
@@ -85,6 +101,7 @@ function JoinRequests() {
       return;
     }
     // Refresh data after
+    alert("Request rejected! The requester will be notified.");
     fetchOwnProjectJoinRequests();
   };
 
@@ -116,9 +133,7 @@ function JoinRequests() {
                 <p>Status: {request.status}</p>
               </div>
               <div className="request-actions">
-                <button onClick={() => handleApprove(request.id)}>
-                  Approve
-                </button>
+                <button onClick={() => handleApprove(request)}>Approve</button>
                 <button onClick={() => handleReject(request.id)}>Reject</button>
               </div>
             </div>

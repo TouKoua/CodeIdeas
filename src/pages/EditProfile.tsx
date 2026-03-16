@@ -14,20 +14,8 @@ function EditProfile() {
   const navigate = useNavigate();
 
   // Skills Tag Logic
-  const [skills, setSkills] = useState<string[]>(userData?.skills || []);
+  const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
-
-  const addSkill = () => {
-    addTag(skillInput, skills, setSkills, setSkillInput);
-  };
-
-  const removeSkill = (skill: string) => {
-    removeTag(skill, skills, setSkills);
-  };
-
-  const handleSkillKeyPress = (e: React.KeyboardEvent) => {
-    handleTagKeyPress(e, skillInput, skills, setSkills, setSkillInput);
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -56,6 +44,18 @@ function EditProfile() {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const addSkill = () => {
+    addTag(skillInput, skills, setSkills, setSkillInput);
+  };
+
+  const removeSkill = (skill: string) => {
+    removeTag(skill, skills, setSkills);
+  };
+
+  const handleSkillKeyPress = (e: React.KeyboardEvent) => {
+    handleTagKeyPress(e, skillInput, skills, setSkills, setSkillInput);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,14 +86,14 @@ function EditProfile() {
     <div className="edit-profile-page">
       <div className="edit-profile-container">
         <h1>Edit Profile</h1>
-        {userData?.first_name && userData?.last_name && (
+        {userData ? (
           <form onSubmit={handleSubmit}>
             {/* First Name Field */}
             <label htmlFor="firstName">First Name</label>
             <input
               id="firstName"
               type="text"
-              value={userData.first_name}
+              value={userData.first_name || ""}
               onChange={(e) =>
                 setUserData({ ...userData, first_name: e.target.value })
               }
@@ -105,7 +105,7 @@ function EditProfile() {
             <input
               id="lastName"
               type="text"
-              value={userData.last_name}
+              value={userData.last_name || ""}
               onChange={(e) =>
                 setUserData({ ...userData, last_name: e.target.value })
               }
@@ -176,6 +176,8 @@ function EditProfile() {
             </button>
             {error && <div className="error-message">{error}</div>}
           </form>
+        ) : (
+          <p>User data not found.</p>
         )}
       </div>
     </div>
