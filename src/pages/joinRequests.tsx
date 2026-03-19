@@ -62,23 +62,9 @@ function JoinRequests() {
   }, [user]);
 
   const handleApprove = async (request: JoinRequest) => {
-    const { error } = await supabase
-      .from("join_requests")
-      .update({ status: "approved", responded_at: new Date() })
-      .eq("id", request.id);
-    const { error: addTeammateError } = await supabase
-      .from("team_members")
-      .insert([
-        {
-          team_id: request.team.id,
-          user_id: request.user.id,
-          role: "member",
-        },
-      ]);
-    if (addTeammateError) {
-      setError(addTeammateError.message);
-      return;
-    }
+    const { error } = await supabase.rpc("approve_join_request", {
+      request_id: request.id,
+    });
 
     if (error) {
       setError(error.message);
@@ -92,10 +78,9 @@ function JoinRequests() {
   };
 
   const handleReject = async (requestId: string) => {
-    const { error } = await supabase
-      .from("join_requests")
-      .update({ status: "rejected", responded_at: new Date() })
-      .eq("id", requestId);
+    const { error } = await supabase.rpc("reject_join_request", {
+      request_id: requestId,
+    });
     if (error) {
       setError(error.message);
       return;
