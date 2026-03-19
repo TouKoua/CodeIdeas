@@ -15,6 +15,7 @@ type AuthContextType = {
     last_name: string,
   ) => Promise<User | null>;
   signUpWithGithub: () => Promise<void>;
+  signUpWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -84,7 +85,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     });
-    console.log("Sign Up Response:", data, error);
     if (error) throw "Sign Up Error: " + error.message;
     setLoading(false);
     return data.user;
@@ -106,6 +106,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   };
 
+  const signUpWithGoogle = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+    if (error) throw error;
+    setLoading(false);
+  }
+
   return (
     <AuthContext.Provider
       value={{
@@ -116,6 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signUp,
         signOut,
         signUpWithGithub,
+        signUpWithGoogle,
       }}
     >
       {children}

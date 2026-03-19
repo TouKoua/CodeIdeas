@@ -2,13 +2,13 @@ import { useAuth } from "../context/AuthContext";
 import "./Dashboard.css";
 
 function Dashboard() {
-  const { user } = useAuth();
+  const { userProfile } = useAuth();
 
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
         <div className="dashboard-header">
-          <h1>Welcome, {user?.email}</h1>
+          <h1>Welcome, {userProfile?.first_name}</h1>
           <p>Manage your ideas and collaborations</p>
         </div>
 
@@ -24,7 +24,7 @@ function Dashboard() {
           <div className="dashboard-card">
             <h2>Collaborations</h2>
             <p>See all the projects you're currently collaborating on.</p>
-            <a href="/collaborations" className="dashboard-card-action">
+            <a href="/joinRequests" className="dashboard-card-action">
               View Collaborations
             </a>
           </div>

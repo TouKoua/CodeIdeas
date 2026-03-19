@@ -37,6 +37,22 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.ProjectCard button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.ProjectCard button:hover {
+  background-color: #c82333;
+}
+
 /* Empty state styling */
 .my-ideas-page > p:last-child {
   text-align: center;

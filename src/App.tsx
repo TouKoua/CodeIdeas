@@ -13,6 +13,7 @@ import Project from "./pages/Project";
 import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 import MyIdeas from "./pages/my-ideas";
+import JoinRequests from "./pages/joinRequests";
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
           element={
             <ProtectedRoute>
               <MyIdeas />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/joinRequests"
+          element={
+            <ProtectedRoute>
+              <JoinRequests />
             </ProtectedRoute>
           }
         />
