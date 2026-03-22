@@ -54,6 +54,12 @@ function MyIdeas() {
                 <ProjectCard project={idea} />
               </Link>
               <button onClick={() => handleDeleteIdea(idea.id)}>Delete</button>
+              <Link to={`/edit-idea/${idea.id}`}>
+                <button>Edit</button>
+              </Link>
+              <Link to={`/manageTeams/${idea.id}`}>
+                <button>Manage Team</button>
+              </Link>
             </div>
           ))}
         </div>
