@@ -15,6 +15,7 @@ import "./App.css";
 import MyIdeas from "./pages/my-ideas";
 import JoinRequests from "./pages/joinRequests";
 import EditIdea from "./pages/EditIdea";
+import ManageTeams from "./pages/manageTeams";
 
 function App() {
   return (
@@ -84,10 +85,10 @@ function App() {
           }
         />
         <Route
-          path="/manageTeams/:id"
+          path="/manageTeams/:ideaid"
           element={
             <ProtectedRoute>
-              <h2>Manage Teams Page - Coming Soon</h2>
+              <ManageTeams />
             </ProtectedRoute>
           }
         />
