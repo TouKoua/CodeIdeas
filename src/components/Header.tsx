@@ -23,7 +23,7 @@ function Header() {
       <div className="dropdown-menu">
         <ul className="dropdown-list">
           <li>
-            <Link to="/profile" className="dropdown-link">
+            <Link to={`/profile/${user?.id}`} className="dropdown-link">
               My Profile
             </Link>
           </li>

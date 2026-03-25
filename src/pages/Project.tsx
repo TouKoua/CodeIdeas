@@ -210,7 +210,15 @@ function ProjectContent({ project }: { project: Idea }) {
           </div>
         </div>
         <div className="other-column">
-          <div className="profile-section"></div>
+          <div className="profile-section">
+            <h3 className="profile-title">Project Owner</h3>
+            <Link
+              to={`/profile/${project.creator_id}`}
+              state={{ from: "project" }}
+            >
+              {project.creator_id}
+            </Link>
+          </div>
           {projectList.similarProjects.length > 0 && (
             <div>
               <h3 className="similar-project-title">Similar Projects</h3>

@@ -43,10 +43,10 @@ function App() {
           }
         />
         <Route
-          path="/profile"
+          path="/profile/:user_id"
           element={
             <ProtectedRoute>
-              <ProfilePage user_id={null} />
+              <ProfilePage />
             </ProtectedRoute>
           }
         />
