@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import type { Idea, JoinRequest, Team, TeamMember } from "../types";
+import type {
+  Idea,
+  JoinRequest,
+  Team,
+  TeamMember,
+  UserProfile,
+} from "../types";
 import supabase from "../services/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 
@@ -123,7 +129,7 @@ export async function fetchUserIdeas(user: User | null) {
 }
 
 export function useFetchUser(id: string) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
