@@ -147,46 +147,6 @@ export function useFetchTeamCount(team: Team) {
   return { teamCount, error };
 }
 
-export function useFetchTeamJoinRequests(teamId: string) {
-  const [joinRequests, setJoinRequests] = useState<JoinRequest[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!teamId) return;
-
-    const fetchJoinRequests = async () => {
-      try {
-        const { data, error: fetchError } = await supabase
-          .from("join_requests")
-          .select("*, user_profiles(*)")
-          .eq("team_id", teamId);
-
-        if (fetchError) {
-          setError(fetchError.message);
-          setJoinRequests([]);
-        } else {
-          const pending = data.filter(
-            (request) => request.status === "pending",
-          );
-          const enrichedPending = pending.map((request) => ({
-            ...request,
-            user: request.user_profiles,
-          }));
-          setJoinRequests(enrichedPending);
-          setError(null);
-        }
-      } catch (err: any) {
-        setError(err.message);
-        setJoinRequests([]);
-      }
-    };
-
-    fetchJoinRequests();
-  }, [teamId]);
-
-  return { joinRequests, error };
-}
-
 export function useFetchUserPendingRequests(userID: string) {
   const [pendingRequests, setPendingRequests] = useState<JoinRequest[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -198,7 +158,7 @@ export function useFetchUserPendingRequests(userID: string) {
       try {
         const { data, error: fetchError } = await supabase
           .from("join_requests")
-          .select("*, teams(*)")
+          .select("*, team: team_id(name, description, team_size)")
           .eq("user_id", userID)
           .eq("status", "pending");
 
@@ -206,11 +166,7 @@ export function useFetchUserPendingRequests(userID: string) {
           setError(fetchError.message);
           setPendingRequests([]);
         } else {
-          const enrichedPending = data.map((request) => ({
-            ...request,
-            team: request.teams,
-          }));
-          setPendingRequests(enrichedPending);
+          setPendingRequests(data || []);
           setError(null);
         }
       } catch (err: any) {

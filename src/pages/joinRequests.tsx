@@ -14,6 +14,7 @@ function JoinRequests() {
 
   const fetchOwnProjectJoinRequests = async () => {
     try {
+      // Step 1: Fetch teams where the user is a creator
       const { data: teams, error: teamsError } = await supabase
         .from("team_members")
         .select("team_id")
@@ -30,15 +31,11 @@ function JoinRequests() {
       }
 
       const teamIds = teams.map((team) => team.team_id);
-      if (teamIds.length === 0) {
-        setTeamRequests([]);
-        return;
-      }
 
       const { data: joinRequests, error: requestsError } = await supabase
         .from("join_requests")
         .select(
-          "*, user: user_id(id,first_name, last_name), team: team_id(name, description, team_size)",
+          "*, user: user_profiles(first_name, last_name), team: team_id(name, description, team_size)",
         )
         .in("team_id", teamIds)
         .eq("status", "pending");
