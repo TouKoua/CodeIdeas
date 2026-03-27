@@ -37,7 +37,9 @@ function JoinRequests() {
 
       const { data: joinRequests, error: requestsError } = await supabase
         .from("join_requests")
-        .select("*, user_profiles(*), teams(*)")
+        .select(
+          "*, user: user_id(id,first_name, last_name), team: team_id(name, description, team_size)",
+        )
         .in("team_id", teamIds)
         .eq("status", "pending");
       if (requestsError) {
@@ -45,8 +47,8 @@ function JoinRequests() {
       }
       const enrichedRequests = joinRequests.map((request) => ({
         ...request,
-        user: request.user_profiles,
-        team: request.teams,
+        user: request.user,
+        team: request.team,
       }));
       setTeamRequests(enrichedRequests);
       setError(null);
@@ -114,7 +116,7 @@ function JoinRequests() {
                   Requested At:{" "}
                   {new Date(request.requested_at).toLocaleString()}
                 </p>
-                <p>Requester: {request.user.first_name}</p>
+                <p>Requester: {request.user?.first_name}</p>
                 <p>Status: {request.status}</p>
               </div>
               <div className="request-actions">

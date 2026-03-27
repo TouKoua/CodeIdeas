@@ -93,7 +93,7 @@ function CreateIdea() {
         throw "Team Membership Failure: " + memberError.message;
       }
 
-      navigate("/ideas/" + ideaId); // Redirect to the newly created idea's page
+      navigate("/project/" + ideaId); // Redirect to the newly created idea's page
     } catch (err: any) {
       setError(err.message);
     } finally {
