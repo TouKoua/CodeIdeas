@@ -50,6 +50,55 @@ function ProfilePage({ user_id }: { user_id: string | null }) {
   if (loading) {
     return <div>Loading...</div>;
   }
+
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure? This will permanently delete your account and all your project ideas. This cannot be undone.",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+
+      if (!token) {
+        throw new Error("Not authenticated");
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            userId: user?.id || session.data.session?.user?.id,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        let data: any = null;
+        try {
+          data = await response.json();
+        } catch (err) {
+          // Ignore JSON parsing errors
+        }
+        throw new Error(data?.error || "Failed to delete account");
+      }
+
+      // Sign out and redirect
+      const { signOut } = useAuth();
+      await signOut();
+      window.location.href = "/";
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="profile-page">
       {userData?.first_name && (
@@ -82,7 +131,7 @@ function ProfilePage({ user_id }: { user_id: string | null }) {
               <ul className="ideas-list">
                 {ideas.map((idea) => (
                   <li key={idea.id} className="idea-item">
-                    <Link to={`/ideas/${idea.id}`} className="idea-link">
+                    <Link to={`/project/${idea.id}`} className="idea-link">
                       <h3>{idea.title}</h3>
                       <p>{idea.description}</p>
                     </Link>
@@ -98,6 +147,9 @@ function ProfilePage({ user_id }: { user_id: string | null }) {
               <Link to="/edit-profile" className="btn btn-secondary">
                 Edit Profile
               </Link>
+              <button onClick={handleDeleteAccount} className="btn btn-danger">
+                Delete Account
+              </button>
             </div>
           )}
         </div>

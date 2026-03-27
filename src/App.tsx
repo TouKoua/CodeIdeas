@@ -14,6 +14,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import "./App.css";
 import MyIdeas from "./pages/my-ideas";
 import JoinRequests from "./pages/joinRequests";
+import EditIdea from "./pages/EditIdea";
+import ManageTeams from "./pages/manageTeams";
 
 function App() {
   return (
@@ -71,6 +73,22 @@ function App() {
           element={
             <ProtectedRoute>
               <JoinRequests />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/edit-idea/:id"
+          element={
+            <ProtectedRoute>
+              <EditIdea />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manageTeams/:ideaid"
+          element={
+            <ProtectedRoute>
+              <ManageTeams />
             </ProtectedRoute>
           }
         />

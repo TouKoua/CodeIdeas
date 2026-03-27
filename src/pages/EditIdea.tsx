@@ -1,29 +1,71 @@
 import { useAuth } from "../context/AuthContext.tsx";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { addTag, removeTag, handleTagKeyPress } from "../utils/formHelpers.ts";
 import supabase from "../services/supabaseClient.ts";
-import "./CreateIdea.css";
+import "./EditIdea.css";
 
-function CreateIdea() {
+function EditIdea() {
+  const { id } = useParams();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [techStack, setTechStack] = useState<string[]>([]);
   const [techInput, setTechInput] = useState("");
   const [difficulty_level, setDifficulty] = useState("");
-  const [teamSize, setTeamSize] = useState<number | "">(0);
   const [githubLink, setGithubLink] = useState("");
   const [durationValue, setDurationValue] = useState<number | "">("");
   const [durationUnit, setDurationUnit] = useState("days");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [project, setProject] = useState<any>(null); // State to hold the fetched project data
   const { user } = useAuth(); // Get user from context
   const navigate = useNavigate();
 
-  {
-    /* Tags/Pills Helper functions */
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("ideas")
+          .select("*")
+          .eq("id", id)
+          .single();
+        if (error) {
+          throw error;
+        }
+        if (data) {
+          // Update the state with the fetched project data
+          setTitle(data.title);
+          setDescription(data.description);
+          setCategory(data.category);
+          setTechStack(data.technologies || []);
+          setDifficulty(data.difficulty);
+          setGithubLink(data.github_link);
+          const [value, unit] = data.duration?.split(" ") || ["", "days"];
+          setDurationValue(value ? parseInt(value) : "");
+          setDurationUnit(unit || "days");
+          setProject(data); // Set the fetched project data
+        } else {
+          throw new Error("Project not found");
+        }
+      } catch (err) {
+        console.error("Error fetching project:", err);
+        navigate("/dashboard");
+      }
+    };
+    fetchProject();
+  }, [id]);
+
+  if (project && project.creator_id !== user?.id) {
+    return (
+      <div className="error-message">
+        <h1>You do not have permission to edit this idea.</h1>
+        <p>Please contact the owner of this idea for more information.</p>
+        <button onClick={() => navigate("/dashboard")}>
+          Go Back to Dashboard
+        </button>
+      </div>
+    );
   }
   const addTechStack = () => {
     addTag(techInput, techStack, setTechStack, setTechInput);
@@ -51,49 +93,23 @@ function CreateIdea() {
       const duration = durationValue
         ? `${durationValue} ${durationUnit}`
         : null;
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("ideas")
-        .insert([
-          {
-            title,
-            description,
-            category,
-            technologies: techStack,
-            difficulty: difficulty_level,
-            github_link: githubLink,
-            duration,
-            creator_id: user?.id,
-          },
-        ])
-        .select();
+        .update({
+          title,
+          description,
+          category,
+          technologies: techStack,
+          difficulty: difficulty_level,
+          github_link: githubLink,
+          duration,
+        })
+        .eq("id", project.id);
       if (error) {
-        throw "Idea Creation Failure: " + error.message;
+        throw "Idea Update Failure: " + error.message;
       }
 
-      const ideaId = data[0].id; // Get the ID of the newly created idea
-      const { data: teamData, error: teamError } = await supabase
-        .from("teams")
-        .insert([
-          {
-            idea_id: ideaId,
-            name: `${title} Team`,
-            team_size: teamSize,
-          },
-        ])
-        .select();
-      if (teamError) {
-        throw "Team Creation Failure: " + teamError.message;
-      }
-
-      const teamId = teamData[0].id; // Get the ID of the newly created team
-      const { error: memberError } = await supabase
-        .from("team_members")
-        .insert([{ team_id: teamId, user_id: user?.id, role: "creator" }]);
-      if (memberError) {
-        throw "Team Membership Failure: " + memberError.message;
-      }
-
-      navigate("/project/" + ideaId); // Redirect to the newly created idea's page
+      navigate(`/project/${project.id}`); // Redirect to the updated idea's page
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -102,10 +118,10 @@ function CreateIdea() {
   };
 
   return (
-    <div className="create-idea-page">
-      <div className="create-idea-container">
-        <h1>Create a New Idea</h1>
-        <p>Share your project idea with the community</p>
+    <div className="edit-idea-page">
+      <div className="edit-idea-container">
+        <h1>Edit Idea</h1>
+        <p>Update your project idea details</p>
         <form onSubmit={handleSubmit}>
           {/* Title Field */}
           <label htmlFor="title">Title</label>
@@ -132,6 +148,7 @@ function CreateIdea() {
           <label htmlFor="category">Category</label>
           <select
             id="category"
+            value={category}
             onChange={(e) => setCategory(e.target.value)}
             disabled={loading}
             required
@@ -182,6 +199,7 @@ function CreateIdea() {
           <label htmlFor="difficulty">Difficulty</label>
           <select
             id="difficulty"
+            value={difficulty_level}
             onChange={(e) => setDifficulty(e.target.value)}
             disabled={loading}
           >
@@ -191,18 +209,6 @@ function CreateIdea() {
             <option value="Advanced">Advanced</option>
             <option value="Expert">Expert</option>
           </select>
-          {/* Team Size Field */}
-          <label htmlFor="teamSize">Team Size</label>
-          <input
-            id="teamSize"
-            type="number"
-            value={teamSize}
-            onChange={(e) =>
-              setTeamSize(e.target.value ? parseInt(e.target.value) : "")
-            }
-            placeholder="Enter the team size"
-            disabled={loading}
-          />
           {/* GitHub Link Field */}
           <label htmlFor="githubLink">GitHub Link</label>
           <input
@@ -240,7 +246,7 @@ function CreateIdea() {
             </select>
           </div>
           <button type="submit" disabled={loading}>
-            {loading ? "Submitting..." : "Submit Idea"}
+            {loading ? "Updating..." : "Update Idea"}
           </button>
           {error && <div className="error-message">{error}</div>}
         </form>
@@ -249,4 +255,4 @@ function CreateIdea() {
   );
 }
 
-export default CreateIdea;
+export default EditIdea;
