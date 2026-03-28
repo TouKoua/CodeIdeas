@@ -46,14 +46,22 @@ function ProjectContent({ project }: { project: Idea }) {
           .from("team_members")
           .select("*")
           .eq("team_id", team.id)
-          .eq("user_id", user?.id)
-          .single();
-        if (teamMembersError) throw teamMembersError;
-        if (teamMember) {
+          .eq("user_id", user?.id);
+
+        if (teamMembersError) {
+          throw teamMembersError;
+        }
+
+        // .single() throws PGRST116 when no rows found - that's OK, means they're not a member
+        if (teamMember && teamMember.length > 0) {
           setIsTeamMember(true);
           setLoading(false);
           return;
         }
+
+        console.log(
+          "User is not a team member, checking for existing join requests...",
+        );
 
         // check if an existing request for this user to this team already exists
         const { data: existingRequest, error: existingRequestError } =
@@ -61,10 +69,14 @@ function ProjectContent({ project }: { project: Idea }) {
             .from("join_requests")
             .select("*")
             .eq("team_id", team.id)
-            .eq("user_id", user?.id)
-            .single();
-        if (existingRequestError) throw existingRequestError;
-        if (existingRequest) {
+            .eq("user_id", user?.id);
+
+        if (existingRequestError) {
+          throw existingRequestError;
+        }
+
+        // If no request exists, existingRequestError will be PGRST116 - that's OK!
+        if (existingRequest && existingRequest.length > 0) {
           setHasPendingRequest(true);
           setLoading(false);
           return;
@@ -82,8 +94,8 @@ function ProjectContent({ project }: { project: Idea }) {
           setLoading(false);
           return;
         }
-      } catch (error) {
-        console.error("Error checking existing join request:", error);
+      } catch (error: any) {
+        console.error("Error checking user status:", error);
       } finally {
         setLoading(false);
       }

@@ -1,11 +1,12 @@
 import { useAuth } from "../context/AuthContext.tsx";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
 
 function Login() {
   //const [email, setEmail] = useState("");
   //const [password, setPassword] = useState("");
+  const { user } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -25,6 +26,11 @@ function Login() {
       setLoading(false);
     }
   };*/
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user]);
 
   const handleGithubSignIn = async () => {
     setLoading(true);
@@ -33,7 +39,6 @@ function Login() {
       await signUpWithGithub();
       // Note: With OAuth, the user is redirected to GitHub and then back to your app.
       // The session is handled by Supabase, so we don't need to do anything else here.
-      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
       setLoading(false); // Stop loading if there's an error
@@ -48,7 +53,6 @@ function Login() {
       await signUpWithGoogle();
       // Note: With OAuth, the user is redirected to Google and then back to your app.
       // The session is handled by Supabase, so we don't need to do anything else here.
-      navigate("/dashboard");
     } catch (err: any) {
       setError(err.message);
       setLoading(false); // Stop loading if there's an error
