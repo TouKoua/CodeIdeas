@@ -91,13 +91,16 @@ function ManageTeams() {
   return (
     <div className="page-container">
       <div className="page-content">
-        <div className="manage-teams-page">
-          <div className="manage-team-container">
-            <button onClick={() => navigate(-1)} className="back-button">
-              ← Back
-            </button>
-            <h1>Manage Team</h1>
-            {team ? (
+        <div className="manage-team-container">
+          <button onClick={() => navigate(-1)} className="back-button">
+            ← Back
+          </button>
+          <h1>Manage Team</h1>
+
+          {error && <div className="error">{error}</div>}
+
+          {team ? (
+            <div>
               <div className="team-info">
                 <h2>{team.name}</h2>
                 {team.description && <p>{team.description}</p>}
@@ -108,13 +111,23 @@ function ManageTeams() {
                   <strong>Current Members:</strong> {members.length} /{" "}
                   {team.team_size}
                 </p>
-                {members.length === 0 ? (
-                  <p>No members yet</p>
-                ) : (
+                <p>
+                  <strong>Created:</strong>{" "}
+                  {new Date(team.created_at).toLocaleDateString()}
+                </p>
+              </div>
+
+              {members.length === 0 ? (
+                <div className="empty-state">
+                  <p>No team members yet</p>
+                </div>
+              ) : (
+                <div className="members-section">
+                  <h2>Team Members</h2>
                   <div className="members-list">
                     {members.map((member) => (
                       <div key={member.id} className="member-card">
-                        <img src={member.avatar} alt="avatar" />
+                        <img src={member.avatar} alt={member.name} />
                         <div>
                           <p>{member.name}</p>
                           <span>{member.role}</span>
@@ -130,16 +143,12 @@ function ManageTeams() {
                       </div>
                     ))}
                   </div>
-                )}
-                <p>
-                  <strong>Created:</strong>{" "}
-                  {new Date(team.created_at).toLocaleDateString()}
-                </p>
-              </div>
-            ) : (
-              <p>No team found for this idea.</p>
-            )}
-          </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <p style={{ color: "#a0a0b0" }}>No team found for this idea.</p>
+          )}
         </div>
       </div>
     </div>

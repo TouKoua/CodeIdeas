@@ -43,29 +43,47 @@ function MyIdeas() {
   };
 
   return (
-    <div className="my-ideas-page">
-      <h1>My Ideas</h1>
-      <p>Welcome, {userProfile?.first_name}! Here are your submitted ideas.</p>
-      {ideas && ideas.length > 0 ? (
-        <div className="ProjectCard-container">
-          {ideas.map((idea) => (
-            <div key={idea.id} className="ProjectCard">
-              <Link to={`/project/${idea.id}`} className="project-link">
-                <ProjectCard project={idea} />
-              </Link>
-              <button onClick={() => handleDeleteIdea(idea.id)}>Delete</button>
-              <Link to={`/edit-idea/${idea.id}`}>
-                <button>Edit</button>
-              </Link>
-              <Link to={`/manageTeams/${idea.id}`}>
-                <button>Manage Team</button>
-              </Link>
+    <div className="page-container">
+      <div className="page-content">
+        <div className="my-ideas-page">
+          <h1>My Project Ideas</h1>
+          <p>Create, edit, and manage your project ideas here.</p>
+
+          {ideas && ideas.length > 0 ? (
+            <div className="ProjectCard-container">
+              {ideas.map((idea) => (
+                <div key={idea.id} className="ProjectCard">
+                  <div className="ProjectCard-content">
+                    <h2 className="ProjectCard-title">{idea.title}</h2>
+                    <p className="ProjectCard-description">
+                      {idea.description}
+                    </p>
+                    <p className="ProjectCard-meta">
+                      {idea.difficulty} • {idea.duration}
+                    </p>
+                  </div>
+                  <div className="ProjectCard-actions">
+                    <Link to={`/edit-idea/${idea.id}`} className="edit-btn">
+                      ✏️ Edit
+                    </Link>
+                    <button
+                      onClick={() => handleDeleteIdea(idea.id)}
+                      className="delete-btn"
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          ) : (
+            <div className="empty-state">
+              <p>You haven't created any project ideas yet.</p>
+              <Link to="/new-project">Create Your First Idea</Link>
+            </div>
+          )}
         </div>
-      ) : (
-        <p>No ideas found.</p>
-      )}
+      </div>
     </div>
   );
 }
