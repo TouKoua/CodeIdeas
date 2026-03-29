@@ -2,6 +2,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   useFetchSimilarProjects,
   useFetchSingleProject,
+  useFetchUser,
 } from "../context/ProjectGetter";
 import "./Project.css";
 import "../ui/Badge.css";
@@ -18,6 +19,7 @@ function ProjectContent({ project }: { project: Idea }) {
   const [loading, setLoading] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
+  const projectUser = useFetchUser(project.creator_id);
   const formattedDate = new Date().toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -210,7 +212,21 @@ function ProjectContent({ project }: { project: Idea }) {
           </div>
         </div>
         <div className="other-column">
-          <div className="profile-section"></div>
+          <div className="profile-section">
+            <h3 className="profile-title">Project Owner</h3>
+            <img
+              src={projectUser.user?.avatar_url || "/default-avatar.png"}
+              alt={`${projectUser.user?.first_name} ${projectUser.user?.last_name}'s avatar`}
+              className="profile-avatar"
+            />
+            <br />
+            <Link
+              to={`/profile/${project.creator_id}`}
+              state={{ from: "project" }}
+            >
+              {projectUser.user?.first_name} {projectUser.user?.last_name}
+            </Link>
+          </div>
           {projectList.similarProjects.length > 0 && (
             <div>
               <h3 className="similar-project-title">Similar Projects</h3>
