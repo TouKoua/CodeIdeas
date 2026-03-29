@@ -145,6 +145,16 @@
     background-color: rgba(102, 126, 234, 0.25);
 }
 
+.team-size-info {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  color: #a0a0b0;
+  padding: 0.75rem;
+  background-color: #262635;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
+}
+
 .project-buttons {
     display: flex;
     padding-top: 1.5rem;

@@ -118,6 +118,52 @@
   box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
+.ProjectCard-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.ProjectCard-actions .manage-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.ProjectCard-actions .manage-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ProjectCard-actions .edit-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.ProjectCard-actions .edit-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ProjectCard-actions .delete-btn {
+  flex: 0 0 auto;
+  padding: 0.75rem 0.75rem;
+  background-color: #e74c3c;
+  color: white;
+  min-width: 50px;
+}
+
+.ProjectCard-actions .delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
 .empty-state {
   text-align: center;
   color: #a0a0b0;

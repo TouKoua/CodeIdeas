@@ -57,7 +57,7 @@ function Browse() {
             </p>
           </div>
           <div className="quick-actions">
-            <Link to="/new-project">
+            <Link to="/create-idea">
               <button>Post New Idea</button>
             </Link>
             <Link to="/search">
