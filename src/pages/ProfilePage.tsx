@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import { useAuth } from "../context/AuthContext";
+import "../styles/global.css";
 import "./ProfilePage.css";
 import type { UserProfile } from "../types/index";
 
@@ -104,61 +105,79 @@ function ProfilePage() {
   };
 
   return (
-    <div className="profile-page">
-      {userData?.first_name && (
-        <div>
-          <div className="profile-header">
-            <h1>
-              {userData?.first_name} {userData?.last_name}
-            </h1>
+    <div className="page-container">
+      <div className="page-content">
+        <div className="profile-page">
+          {userData?.first_name && (
+            <div>
+              {isOwnProfile && (
+                <div className="edit-profile-link">
+                  <Link to="/edit-profile" className="btn btn-secondary">
+                    Edit Profile
+                  </Link>
+                </div>
+              )}
 
-            <img
-              src={userData?.avatar_url || "/default-avatar.png"}
-              alt={`${userData?.first_name} ${userData?.last_name}'s avatar`}
-              className="profile-avatar"
-            />
+              <div className="profile-header">
+                <h1>
+                  {userData?.first_name} {userData?.last_name}
+                </h1>
 
-            <p>{userData?.bio}</p>
-          </div>
-          <div className="profile-skills">
-            <h2>Skills</h2>
-            {(userData?.skills || []).map((skill: string) => (
-              <span key={skill} className="skill-badge">
-                {skill}
-              </span>
-            ))}
-          </div>
+                <img
+                  src={userData?.avatar_url || "/default-avatar.png"}
+                  alt={`${userData?.first_name} ${userData?.last_name}'s avatar`}
+                  className="profile-avatar"
+                />
 
-          <div className="profile-ideas">
-            <h2>Project Ideas</h2>
-            {ideas.length > 0 ? (
-              <ul className="ideas-list">
-                {ideas.map((idea) => (
-                  <li key={idea.id} className="idea-item">
-                    <Link to={`/project/${idea.id}`} className="idea-link">
-                      <h3>{idea.title}</h3>
-                      <p>{idea.description}</p>
-                    </Link>
-                  </li>
+                <p>{userData?.bio}</p>
+              </div>
+
+              <div className="profile-skills">
+                <h2>Skills</h2>
+                {(userData?.skills || []).map((skill: string) => (
+                  <span key={skill} className="skill-badge">
+                    {skill}
+                  </span>
                 ))}
-              </ul>
-            ) : (
-              <p>This user has not shared any project ideas yet.</p>
-            )}
-          </div>
-          {isOwnProfile && (
-            <div className="edit-profile-link">
-              <Link to="/edit-profile" className="btn btn-secondary">
-                Edit Profile
-              </Link>
-              <button onClick={handleDeleteAccount} className="btn btn-danger">
-                Delete Account
-              </button>
+              </div>
+
+              <div className="profile-ideas">
+                <h2>Project Ideas</h2>
+                {ideas.length > 0 ? (
+                  <ul className="ideas-list">
+                    {ideas.map((idea) => (
+                      <li key={idea.id} className="idea-item">
+                        <Link to={`/project/${idea.id}`} className="idea-link">
+                          <h3>{idea.title}</h3>
+                          <p>{idea.description}</p>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>This user has not shared any project ideas yet.</p>
+                )}
+              </div>
+
+              {isOwnProfile && (
+                <div className="danger-zone">
+                  <h3>Danger Zone</h3>
+                  <p>
+                    Permanently delete your account and all associated data.
+                  </p>
+                  <button
+                    onClick={handleDeleteAccount}
+                    className="btn btn-danger"
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              )}
             </div>
           )}
+          {error && <div className="error-message">{error}</div>}
         </div>
-      )}
-      {error && <div className="error-message">{error}</div>}
+      </div>
     </div>
   );
 }

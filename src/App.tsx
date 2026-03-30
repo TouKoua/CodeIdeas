@@ -85,7 +85,7 @@ function App() {
           }
         />
         <Route
-          path="/manageTeams/:ideaid"
+          path="/manage-team/:ideaid"
           element={
             <ProtectedRoute>
               <ManageTeams />

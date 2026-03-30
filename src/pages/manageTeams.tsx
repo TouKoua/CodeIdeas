@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext.tsx";
 import { useState, useEffect } from "react";
+import "../styles/global.css";
 import "./manageTeams.css";
 import type { Team } from "../types/index.ts";
 import { useNavigate, useParams } from "react-router-dom";
@@ -88,48 +89,68 @@ function ManageTeams() {
   if (error) return <div className="error">{error}</div>;
 
   return (
-    <div className="manage-teams-page">
-      <button onClick={() => navigate(-1)}>Back</button>
-      <h1>Manage Team</h1>
-      {team ? (
-        <div className="team-info">
-          <h2>{team.name}</h2>
-          {team.description && <p>{team.description}</p>}
-          <p>
-            <strong>Max Size:</strong> {team.team_size}
-          </p>
-          <p>
-            <strong>Current Members:</strong> {members.length} /{" "}
-            {team.team_size}
-          </p>
-          {members.length === 0 ? (
-            <p>No members yet</p>
-          ) : (
-            <div className="members-list">
-              {members.map((member) => (
-                <div key={member.id} className="member-card">
-                  <img src={member.avatar} alt="avatar" />
-                  <div>
-                    <p>{member.name}</p>
-                    <span>{member.role}</span>
-                  </div>
-                  {member.role !== "creator" && (
-                    <button onClick={() => handleRemoveMember(member.id)}>
-                      Remove
-                    </button>
-                  )}
+    <div className="page-container">
+      <div className="page-content">
+        <div className="manage-team-container">
+          <button onClick={() => navigate(-1)} className="back-button">
+            ← Back
+          </button>
+          <h1>Manage Team</h1>
+
+          {error && <div className="error">{error}</div>}
+
+          {team ? (
+            <div>
+              <div className="team-info">
+                <h2>{team.name}</h2>
+                {team.description && <p>{team.description}</p>}
+                <p>
+                  <strong>Max Size:</strong> {team.team_size}
+                </p>
+                <p>
+                  <strong>Current Members:</strong> {members.length} /{" "}
+                  {team.team_size}
+                </p>
+                <p>
+                  <strong>Created:</strong>{" "}
+                  {new Date(team.created_at).toLocaleDateString()}
+                </p>
+              </div>
+
+              {members.length === 0 ? (
+                <div className="empty-state">
+                  <p>No team members yet</p>
                 </div>
-              ))}
+              ) : (
+                <div className="members-section">
+                  <h2>Team Members</h2>
+                  <div className="members-list">
+                    {members.map((member) => (
+                      <div key={member.id} className="member-card">
+                        <img src={member.avatar} alt={member.name} />
+                        <div>
+                          <p>{member.name}</p>
+                          <span>{member.role}</span>
+                        </div>
+                        {member.role !== "creator" && (
+                          <button
+                            onClick={() => handleRemoveMember(member.id)}
+                            className="remove-button"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+          ) : (
+            <p style={{ color: "#a0a0b0" }}>No team found for this idea.</p>
           )}
-          <p>
-            <strong>Created:</strong>{" "}
-            {new Date(team.created_at).toLocaleDateString()}
-          </p>
         </div>
-      ) : (
-        <p>No team found for this idea.</p>
-      )}
+      </div>
     </div>
   );
 }

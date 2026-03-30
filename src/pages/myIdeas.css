@@ -1,20 +1,20 @@
 .my-ideas-page {
-  max-width: 1200px;
-  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 50%, #16213e 100%);
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
 }
 
 .my-ideas-page h1 {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: #ffffff;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin-bottom: 0.5rem;
 }
 
 .my-ideas-page > p {
   font-size: 1.1rem;
-  color: #666;
+  color: #b0b0c0;
   margin-bottom: 2rem;
 }
 
@@ -27,51 +27,236 @@
 
 .ProjectCard {
   height: 100%;
+  background-color: #262635;
+  border: 1px solid #333;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .ProjectCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-color: #667eea;
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
 }
 
-.ProjectCard button {
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 0.5rem;
+.ProjectCard-content {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ProjectCard-title {
+  font-size: 1.1rem;
   font-weight: 600;
-  transition: background-color 0.2s ease;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
 }
 
-.ProjectCard button:hover {
-  background-color: #c82333;
+.ProjectCard-description {
+  font-size: 0.9rem;
+  color: #b0b0c0;
+  margin-bottom: 1rem;
+  flex: 1;
 }
 
-/* Empty state styling */
-.my-ideas-page > p:last-child {
+.ProjectCard-meta {
+  font-size: 0.85rem;
+  color: #a0a0b0;
+  margin-bottom: 1rem;
+}
+
+.ProjectCard-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.ProjectCard-actions button,
+.ProjectCard-actions a {
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
   text-align: center;
-  font-size: 1rem;
-  color: #999;
-  padding: 2rem;
+}
+
+.ProjectCard-actions .edit-btn {
+  flex: 1;
+  background-color: #667eea;
+  color: white;
+}
+
+.ProjectCard-actions .edit-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ProjectCard-actions .delete-btn {
+  flex: 0 0 auto;
+  padding: 0.75rem 0.75rem;
+  background-color: #e74c3c;
+  color: white;
+  width: auto;
+  min-width: 50px;
+}
+
+.ProjectCard-actions .delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.ProjectCard-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #333;
+}
+
+.ProjectCard-actions .manage-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.ProjectCard-actions .manage-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ProjectCard-actions .edit-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.ProjectCard-actions .edit-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.ProjectCard-actions .delete-btn {
+  flex: 0 0 auto;
+  padding: 0.75rem 0.75rem;
+  background-color: #e74c3c;
+  color: white;
+  min-width: 50px;
+}
+
+.ProjectCard-actions .delete-btn:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.empty-state {
+  text-align: center;
+  color: #a0a0b0;
+  padding: 3rem 1rem;
+  font-style: italic;
+}
+
+.empty-state p {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state a {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.empty-state a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.error {
+  background-color: rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c;
+  border-radius: 6px;
+  padding: 1rem;
+  color: #ff6b6b;
+  margin-bottom: 1.5rem;
+}
+
+.member-teams-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+}
+
+.member-teams-section h2 {
+  font-size: 1.3rem;
+  color: #e0e0e0;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.view-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.view-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .my-ideas-page {
-    padding: 1rem;
+  .my-ideas-page h1 {
+    font-size: 1.5rem;
   }
 
+  .ProjectCard-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
   .my-ideas-page h1 {
-    font-size: 1.8rem;
+    font-size: 1.3rem;
   }
 
   .ProjectCard-container {
     grid-template-columns: 1fr;
+  }
+
+  .ProjectCard-actions {
+    flex-direction: column;
+  }
+
+  .ProjectCard-actions button,
+  .ProjectCard-actions a {
+    width: 100%;
+  }
+
+  .ProjectCard-actions .delete-btn {
+    width: 100%;
   }
 }

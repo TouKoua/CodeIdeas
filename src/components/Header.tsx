@@ -53,6 +53,14 @@ function Header() {
           <Link to="/about" className="nav-link">
             About
           </Link>
+          <Link to="/profile" className="nav-link">
+            My Profile
+          </Link>
+          <div className="create-idea-cta">
+            <Link to="/create-idea" className="cta-button">
+              Create Idea
+            </Link>
+          </div>
           {user ? (
             <div
               className="nav-link dropdown"

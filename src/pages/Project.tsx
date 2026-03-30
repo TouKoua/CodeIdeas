@@ -17,7 +17,6 @@ function ProjectContent({ project }: { project: Idea }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
-  const [requestSent, setRequestSent] = useState(false);
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
   const projectUser = useFetchUser(project.creator_id);
   const formattedDate = new Date().toLocaleDateString("en-US", {
@@ -26,12 +25,12 @@ function ProjectContent({ project }: { project: Idea }) {
     day: "numeric",
   });
   const [teamInfo, setTeamInfo] = useState<Team | null>(null);
+  const [teamMembers, setTeamMembers] = useState<any[]>([]); // You can replace 'any' with a proper type if you have one
   const [isTeamMember, setIsTeamMember] = useState(false);
   const [hasPendingRequest, setHasPendingRequest] = useState(false);
   const [isTeamFull, setIsTeamFull] = useState(false);
 
   useEffect(() => {
-    // Check if the user has already sent a join request for this project
     const checkUserStatus = async () => {
       try {
         // fetch the team information for the project
@@ -43,49 +42,47 @@ function ProjectContent({ project }: { project: Idea }) {
         if (teamError) throw teamError;
         setTeamInfo(team);
 
-        // check if the user is already a member of the team
-        const { data: teamMember, error: teamMembersError } = await supabase
-          .from("team_members")
-          .select("*")
-          .eq("team_id", team.id)
-          .eq("user_id", user?.id)
-          .single();
-        if (teamMembersError) throw teamMembersError;
-        if (teamMember) {
-          setIsTeamMember(true);
-          setLoading(false);
-          return;
-        }
-
-        // check if an existing request for this user to this team already exists
-        const { data: existingRequest, error: existingRequestError } =
-          await supabase
-            .from("join_requests")
-            .select("*")
-            .eq("team_id", team.id)
-            .eq("user_id", user?.id)
-            .single();
-        if (existingRequestError) throw existingRequestError;
-        if (existingRequest) {
-          setHasPendingRequest(true);
-          setLoading(false);
-          return;
-        }
-
-        // check if the team is already full
-        const { data: teamMembers, error: teamMembersListError } =
+        // Get ALL team members in ONE query
+        const { data: allTeamMembers, error: teamMembersListError } =
           await supabase
             .from("team_members")
             .select("*")
             .eq("team_id", team.id);
         if (teamMembersListError) throw teamMembersListError;
-        if (teamMembers && teamMembers.length >= team.team_size) {
+        setTeamMembers(allTeamMembers || []);
+
+        // Check if user is a member (O(n) loop)
+        const userIsMember = allTeamMembers?.some(
+          (member) => member.user_id === user?.id,
+        );
+        if (userIsMember) {
+          setIsTeamMember(true);
+          setLoading(false);
+          return;
+        }
+
+        // Check if team is full
+        if (allTeamMembers && allTeamMembers.length >= team.team_size) {
           setIsTeamFull(true);
           setLoading(false);
           return;
         }
-      } catch (error) {
-        console.error("Error checking existing join request:", error);
+
+        // Check if user has pending request
+        const { data: existingRequest, error: existingRequestError } =
+          await supabase
+            .from("join_requests")
+            .select("*")
+            .eq("team_id", team.id)
+            .eq("user_id", user?.id);
+
+        if (existingRequestError) throw existingRequestError;
+
+        if (existingRequest && existingRequest.length > 0) {
+          setHasPendingRequest(true);
+        }
+      } catch (error: any) {
+        console.error("Error checking user status:", error);
       } finally {
         setLoading(false);
       }
@@ -112,9 +109,7 @@ function ProjectContent({ project }: { project: Idea }) {
           requested_at: new Date(),
         });
       if (requestError) throw requestError;
-      // IF join request is successful, show confirmation message and reset state after a delay
-      setRequestSent(true);
-      setTimeout(() => setRequestSent(false), 3000);
+      setHasPendingRequest(true);
       alert("Join request sent!");
     } catch (error) {
       console.error("Error sending join request:", error);
@@ -192,6 +187,9 @@ function ProjectContent({ project }: { project: Idea }) {
                   ))}
                 </div>
               </div>
+              <div className="team-size-info">
+                Team Size: {teamMembers.length}/{teamInfo?.team_size}
+              </div>
               <div className="join-button-section">
                 {isTeamMember ? (
                   <p>You're already a member</p>
@@ -200,11 +198,8 @@ function ProjectContent({ project }: { project: Idea }) {
                 ) : isTeamFull ? (
                   <p>This team is full</p>
                 ) : (
-                  <button
-                    onClick={handleJoinRequest}
-                    disabled={loading || requestSent}
-                  >
-                    {requestSent ? "Request Sent" : "Join Project"}
+                  <button onClick={handleJoinRequest} disabled={loading}>
+                    Join Project
                   </button>
                 )}
               </div>

@@ -71,18 +71,8 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.dropdown-menu {
-  position: absolute;
-  text-align: center;
-}
-
-.dropdown-list {
-  list-style-type: none;
-  position: absolute;
-  background-color: #443d3d;
-  min-width: 120px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+.create-idea-cta {
+  margin: 0 1rem;
 }
 
 @media (max-width: 768px) {

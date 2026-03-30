@@ -1,33 +1,17 @@
 .project-page {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    max-width: 80rem;
-
-    @media (min-width: 640px) {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-
-    @media (min-width: 1024px) {
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
+    width: 100%;
 }
 
 .back-button {
     display: flex;
     margin-bottom: 1.5rem;
     align-items: center;
-    color: #4B5563;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    color: #667eea;
+    transition: color 0.3s ease;
 }
 
 .back-button:hover {
-    color: #4F46E5;
+    color: #764ba2;
 }
 
 .grid-layout {
@@ -48,11 +32,9 @@
 
 .project-section {
     overflow: hidden;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: #E5E7EB;
-    background-color: #ffffff;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #1a1a2e;
 }
 
 .project-padding {
@@ -72,19 +54,19 @@
     font-size: 1.5rem;
     line-height: 2rem;
     font-weight: 700;
-    color: #111827;
+    color: #e0e0e0;
 }
 
 .project-update {
     display: flex;
     margin-bottom: 1.5rem;
     align-items: center;
-    color: #4B5563;
+    color: #a0a0b0;
 }
 
 .project-old-date {
     margin-left: 0.5rem;
-    color: #6B7280;
+    color: #808090;
 }
 
 .badge-spacing {
@@ -99,31 +81,30 @@
 }
 
 .project-description {
-    color: #374151;
+    color: #b0b0c0;
     white-space: pre-line;
 }
 
 .project-duration-label {
     margin-bottom: 1.5rem;
     margin-top: 0.75rem;
-    margin-top: 0.875rem;
 }
 
 .project-duration-text {
     display: flex;
     align-items: center;
-    color: #374151;
+    color: #b0b0c0;
 }
 
 .project-contributor-label {
     display: flex;
     align-items: center;
-    color: #374151;
+    color: #b0b0c0;
 }
 
 .project-contributor-text {
     margin-left: 0.5rem;
-    color: #4B5563;
+    color: #a0a0b0;
 }
 
 .project-language-section {
@@ -143,27 +124,35 @@
 }
 
 .project-language-label {
-    font-weight: 500;
-    color: #374151;
+    font-weight: 600;
+    color: #b0b0c0;
 }
 
 .project-language-badge {
-    padding-top: 0.25rem;
-    padding-bottom: 0.25rem;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: #3730A3;
-    background-color: #E0E7FF;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 300ms;
+    color: #667eea;
+    background-color: rgba(102, 126, 234, 0.15);
+    border: 1px solid #667eea;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
 
-    :hover {
-        background-color: #C7D2FE;
-    }
+.project-language-badge:hover {
+    background-color: rgba(102, 126, 234, 0.25);
+}
+
+.team-size-info {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  color: #a0a0b0;
+  padding: 0.75rem;
+  background-color: #262635;
+  border-radius: 6px;
+  border-left: 3px solid #667eea;
 }
 
 .project-buttons {
@@ -171,8 +160,7 @@
     padding-top: 1.5rem;
     margin-left: 1rem;
     align-items: center;
-    border-top-width: 1px;
-    border-color: #F3F4F6;
+    border-top: 1px solid #333;
 }
 
 .other-column {
@@ -184,11 +172,9 @@
 .profile-section {
     padding: 1.5rem;
     margin-bottom: 1.5rem;
-    border-radius: 0.5rem;
-    border-width: 1px;
-    border-color: #E5E7EB;
-    background-color: #ffffff;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #262635;
 }
 
 .profile-avatar {
@@ -205,6 +191,8 @@
     margin-bottom: 1rem;
     font-size: 1.125rem;
     line-height: 1.75rem;
+    font-weight: 600;
+    color: #e0e0e0;
     font-weight: 500;
     color: #e8e8e8;
 }
@@ -213,25 +201,50 @@
     margin-top: 1rem;
 }
 
-.request-join-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
+.join-button-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #262635;
+    border: 1px solid #333;
+}
+
+.join-button-section p {
+    margin: 0;
     font-size: 1rem;
     font-weight: 600;
+    color: #a0a0b0;
+}
+
+.join-button-section button {
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
-    margin-top: 1rem;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.request-join-button:hover:not(:disabled) {
-    background-color: #0056b3;
+.join-button-section button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
-.request-join-button:disabled {
-    background-color: #6c757d;
+.join-button-section button:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
-    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .project-title {
+        font-size: 1.25rem;
+    }
+    
+    .grid-layout {
+        grid-template-columns: 1fr;
+    }
 }
