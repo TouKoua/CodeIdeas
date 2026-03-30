@@ -46,9 +46,12 @@ function Browse() {
           <div className="browse-top">
             <div className="browse-top-design">
               <h1>Explore Project Ideas</h1>
-              <Link to="/login" className="btn btn-primary">
+              <button
+                onClick={() => window.location.reload()}
+                className="btn btn-primary"
+              >
                 Refresh
-              </Link>
+              </button>
             </div>
             <p>
               Browse through hundreds of project ideas from the community. Find

@@ -32,6 +32,11 @@ function Header() {
           <Link to="/profile" className="nav-link">
             My Profile
           </Link>
+          <div className="create-idea-cta">
+            <Link to="/create-idea" className="cta-button">
+              Create Idea
+            </Link>
+          </div>
           {user ? (
             <button onClick={handleLogOut} className="nav-link logout-button">
               Logout

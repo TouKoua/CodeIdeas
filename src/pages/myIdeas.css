@@ -202,6 +202,31 @@
   margin-bottom: 1.5rem;
 }
 
+.member-teams-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #333;
+}
+
+.member-teams-section h2 {
+  font-size: 1.3rem;
+  color: #e0e0e0;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.view-btn {
+  background-color: #667eea;
+  color: white;
+  flex: 1;
+}
+
+.view-btn:hover {
+  background-color: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .my-ideas-page h1 {

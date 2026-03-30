@@ -98,21 +98,27 @@ function JoinRequests() {
   const handleReject = async (requestId: string) => {
     setIsProcessing(requestId);
     try {
+      // Remove from UI immediately (optimistic update)
+      setTeamRequests((prev) => prev.filter((req) => req.id !== requestId));
+
       const { error } = await supabase.rpc("reject_join_request", {
-        v_request_id: requestId,
+        requestid: requestId,
       });
+
       if (error) {
+        console.error("Error rejecting request:", error);
         setError(error.message);
+        // Re-fetch if error to restore the request
+        fetchOwnProjectJoinRequests();
         return;
       }
-      // Refresh data after
-      alert("Request rejected! The requester will be notified.");
-      useFetchUserPendingRequests(user?.id || ""); // Refresh pending requests
-      setIsProcessing(null);
+
+      alert("Request rejected!");
     } catch (err: any) {
-      useFetchUserPendingRequests(user?.id || ""); // Refresh pending requests
+      console.error("Error:", err);
       setError(err.message);
-      setIsProcessing(null);
+      // Re-fetch if error to restore the request
+      fetchOwnProjectJoinRequests();
     } finally {
       setIsProcessing(null);
     }

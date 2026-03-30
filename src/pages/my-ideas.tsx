@@ -9,6 +9,7 @@ import supabase from "../services/supabaseClient.ts";
 function MyIdeas() {
   const { user } = useAuth();
   const [ideas, setIdeas] = useState<Idea[] | null>(null);
+  const [memberTeams, setMemberTeams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,6 +20,26 @@ function MyIdeas() {
         setError(null);
         const userIdeas = await fetchUserIdeas(user);
         setIdeas(userIdeas);
+
+        // Fetch teams user is a MEMBER of (but didn't create)
+        if (user) {
+          const { data: teams, error: teamsError } = await supabase
+            .from("team_members")
+            .select(
+              "team_id, teams(id, name, description, team_size, ideas(id, title, description, difficulty, duration, creator_id))",
+            )
+            .eq("user_id", user.id);
+
+          if (teamsError) throw teamsError;
+
+          // Filter out teams user created (those are already in ideas)
+          const memberTeams =
+            teams
+              ?.map((tm: any) => tm.teams)
+              .filter((team: any) => team.ideas?.creator_id !== user.id) || [];
+
+          setMemberTeams(memberTeams);
+        }
       } catch (err: any) {
         console.error("Error fetching ideas:", err);
         setError("Failed to load your ideas. Please try again.");
@@ -82,6 +103,7 @@ function MyIdeas() {
 
           {error && <div className="error">{error}</div>}
 
+          {/* Own Ideas Section */}
           {ideas && ideas.length > 0 ? (
             <div className="ProjectCard-container">
               {ideas.map((idea) => (
@@ -96,11 +118,11 @@ function MyIdeas() {
                     </p>
                   </div>
                   <div className="ProjectCard-actions">
+                    <Link to={`/manage-team/${idea.id}`} className="manage-btn">
+                      👥 Manage
+                    </Link>
                     <Link to={`/edit-idea/${idea.id}`} className="edit-btn">
                       ✏️ Edit
-                    </Link>
-                    <Link to={"manage-team/" + idea.id} className="manage-btn">
-                      👥 Manage Team
                     </Link>
                     <button
                       onClick={() => handleDeleteIdea(idea.id)}
@@ -116,6 +138,36 @@ function MyIdeas() {
             <div className="empty-state">
               <p>You haven't created any project ideas yet.</p>
               <Link to="/new-project">Create Your First Idea</Link>
+            </div>
+          )}
+
+          {/* Teams I'm Part Of Section */}
+          {memberTeams.length > 0 && (
+            <div className="member-teams-section">
+              <h2>Teams I'm Part Of</h2>
+              <div className="ProjectCard-container">
+                {memberTeams.map((team: any) => (
+                  <div key={team.id} className="ProjectCard">
+                    <div className="ProjectCard-content">
+                      <h2 className="ProjectCard-title">{team.name}</h2>
+                      <p className="ProjectCard-description">
+                        {team.ideas.description || "No description"}
+                      </p>
+                      <p className="ProjectCard-meta">
+                        Team Size: {team.team_size}
+                      </p>
+                    </div>
+                    <div className="ProjectCard-actions">
+                      <Link
+                        to={`/project/${team.ideas?.id}`}
+                        className="view-btn"
+                      >
+                        👁️ View
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
