@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import type { Idea, JoinRequest, Team, TeamMember } from "../types";
+import type {
+  Idea,
+  JoinRequest,
+  Team,
+  TeamMember,
+  UserProfile,
+} from "../types";
 import supabase from "../services/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 
@@ -120,6 +126,42 @@ export async function fetchUserIdeas(user: User | null) {
     return [];
   }
   return data;
+}
+
+export function useFetchUser(id: string) {
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchUser = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { data, error: fetchError } = await supabase
+          .from("user_profiles")
+          .select("*")
+          .eq("id", id)
+          .single();
+
+        if (fetchError) throw fetchError;
+        setUser(data || null);
+      } catch (err: any) {
+        setError(err.message);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchUser();
+  }, [id]);
+
+  return { user, loading, error };
 }
 
 export function useFetchTeamCount(team: Team) {

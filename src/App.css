@@ -1,6 +1,8 @@
 #root {
   margin: 0 auto;
   text-align: center;
+  min-height: 100vh;
+  background-color: #1a1a1a;
 }
 
 .logo {

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import { useAuth } from "../context/AuthContext";
@@ -6,15 +6,19 @@ import "../styles/global.css";
 import "./ProfilePage.css";
 import type { UserProfile } from "../types/index";
 
-function ProfilePage({ user_id }: { user_id: string | null }) {
+function ProfilePage() {
   const { user } = useAuth();
+  const { user_id: incoming_id } = useParams<{ user_id: string }>();
   const [userData, setUserData] = useState<UserProfile | null>(null);
   const [ideas, setIdeas] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const profileUserId = user_id || user?.id; // Create a new variable
-  const isOwnProfile = !user_id || user_id === user?.id;
+  const profileUserId = incoming_id || user?.id; // Create a new variable
+  const isOwnProfile = incoming_id === user?.id;
+
+  console.log("profileUserId:", profileUserId);
+  console.log("IncomingUserId:", incoming_id);
 
   useEffect(() => {
     const fetchUserData = async () => {
