@@ -31,7 +31,7 @@ function Header() {
           </Link>
 
           {user && (
-            <Link to="/profile" className="nav-link">
+            <Link to={`/profile:${user.id}`} className="nav-link">
               My Profile
             </Link>
           )}
