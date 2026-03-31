@@ -29,20 +29,25 @@ function Header() {
           <Link to="/about" className="nav-link">
             About
           </Link>
-          {user ? (
-            <div>
-              <Link to="/profile" className="nav-link">
-                My Profile
+
+          {user && (
+            <Link to="/profile" className="nav-link">
+              My Profile
+            </Link>
+          )}
+
+          {user && (
+            <div className="create-idea-cta">
+              <Link to="/create-idea" className="cta-button">
+                Create Idea
               </Link>
-              <div className="create-idea-cta">
-                <Link to="/create-idea" className="cta-button">
-                  Create Idea
-                </Link>
-              </div>
-              <button onClick={handleLogOut} className="nav-link logout-button">
-                Logout
-              </button>
             </div>
+          )}
+
+          {user ? (
+            <button onClick={handleLogOut} className="nav-link logout-button">
+              Logout
+            </button>
           ) : (
             <Link to="/login" className="nav-link">
               <button className="cta-button">Share Your Idea</button>
