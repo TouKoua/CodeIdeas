@@ -17,7 +17,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         <Link to={homeLink} className="logo">
-          <h1>CodeIdeas</h1>
+          <h1>The Creative Spark</h1>
         </Link>
         <nav className="nav">
           <Link to={homeLink} className="nav-link">
@@ -29,18 +29,20 @@ function Header() {
           <Link to="/about" className="nav-link">
             About
           </Link>
-          <Link to="/profile" className="nav-link">
-            My Profile
-          </Link>
-          <div className="create-idea-cta">
-            <Link to="/create-idea" className="cta-button">
-              Create Idea
-            </Link>
-          </div>
           {user ? (
-            <button onClick={handleLogOut} className="nav-link logout-button">
-              Logout
-            </button>
+            <div>
+              <Link to="/profile" className="nav-link">
+                My Profile
+              </Link>
+              <div className="create-idea-cta">
+                <Link to="/create-idea" className="cta-button">
+                  Create Idea
+                </Link>
+              </div>
+              <button onClick={handleLogOut} className="nav-link logout-button">
+                Logout
+              </button>
+            </div>
           ) : (
             <Link to="/login" className="nav-link">
               <button className="cta-button">Share Your Idea</button>
