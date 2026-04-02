@@ -2,12 +2,14 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import supabase from "../services/supabaseClient";
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import "../styles/global.css";
 import "./ProfilePage.css";
 import type { UserProfile } from "../types/index";
 
 function ProfilePage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { user_id: incoming_id } = useParams<{ user_id: string }>();
   const [userData, setUserData] = useState<UserProfile | null>(null);
   const [ideas, setIdeas] = useState<any[]>([]);
@@ -54,17 +56,23 @@ function ProfilePage() {
   }
 
   const handleDeleteAccount = async () => {
-    const confirmed = window.confirm(
-      "Are you sure? This will permanently delete your account and all your project ideas. This cannot be undone.",
-    );
-
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "Are you sure you want to delete your account? This cannot be undone.",
+      )
+    ) {
+      return;
+    }
 
     try {
-      const session = await supabase.auth.getSession();
-      const token = session.data.session?.access_token;
+      setLoading(true);
 
-      if (!token) {
+      // Get the current session to access the JWT token
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session?.access_token) {
         throw new Error("Not authenticated");
       }
 
@@ -74,30 +82,25 @@ function ProfilePage() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${session.access_token}`,
           },
-          body: JSON.stringify({
-            userId: user?.id || session.data.session?.user?.id,
-          }),
+          body: JSON.stringify({ userId: user?.id }),
         },
       );
 
       if (!response.ok) {
-        let data: any = null;
-        try {
-          data = await response.json();
-        } catch (err) {
-          // Ignore JSON parsing errors
-        }
-        throw new Error(data?.error || "Failed to delete account");
+        const error = await response.json();
+        throw new Error(error.error || "Failed to delete account");
       }
 
-      // Sign out and redirect
-      const { signOut } = useAuth();
-      await signOut();
-      window.location.href = "/";
+      alert("Account deleted successfully");
+      await supabase.auth.signOut();
+      navigate("/");
     } catch (err: any) {
+      console.error("Error deleting account:", err);
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
