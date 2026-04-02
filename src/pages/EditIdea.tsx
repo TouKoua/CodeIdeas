@@ -49,7 +49,6 @@ function EditIdea() {
           throw new Error("Project not found");
         }
       } catch (err) {
-        console.error("Error fetching project:", err);
         navigate("/dashboard");
       }
     };

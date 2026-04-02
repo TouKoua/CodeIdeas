@@ -57,7 +57,6 @@ function ManageTeams() {
         }));
         setMembers(formattedMembers);
       } catch (err) {
-        console.error("Error fetching team data:", err);
         setError("Failed to fetch team data.");
       } finally {
         setLoading(false);
@@ -80,7 +79,6 @@ function ManageTeams() {
       }
       setMembers(members.filter((m) => m.id !== memberId));
     } catch (err) {
-      console.error("Error removing team member:", err);
       setError("Failed to remove team member.");
     }
   };

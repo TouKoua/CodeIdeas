@@ -17,9 +17,6 @@ function ProfilePage() {
   const profileUserId = incoming_id || user?.id; // Create a new variable
   const isOwnProfile = incoming_id === user?.id;
 
-  console.log("profileUserId:", profileUserId);
-  console.log("IncomingUserId:", incoming_id);
-
   useEffect(() => {
     const fetchUserData = async () => {
       if (!profileUserId) return; // Safety check

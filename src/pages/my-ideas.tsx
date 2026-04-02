@@ -41,7 +41,6 @@ function MyIdeas() {
           setMemberTeams(memberTeams);
         }
       } catch (err: any) {
-        console.error("Error fetching ideas:", err);
         setError("Failed to load your ideas. Please try again.");
         setIdeas([]);
       } finally {

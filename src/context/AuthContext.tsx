@@ -41,7 +41,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             .single()
             .then(({ data, error }) => {
               if (error) {
-                console.error("Error fetching user profile:", error);
                 setUserProfile(null);
               } else {
                 setUserProfile(data);

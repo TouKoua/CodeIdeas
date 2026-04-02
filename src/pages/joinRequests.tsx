@@ -75,7 +75,6 @@ function JoinRequests() {
       });
 
       if (error) {
-        console.error("Error approving request:", error);
         setError(error.message);
         // Re-fetch if error to restore the request
         fetchOwnProjectJoinRequests();
@@ -86,7 +85,6 @@ function JoinRequests() {
         "Request approved! The requester will be notified and added to the team if they are not already a member.",
       );
     } catch (err: any) {
-      console.error("Error:", err);
       setError(err.message);
       // Re-fetch if error to restore the request
       fetchOwnProjectJoinRequests();
@@ -106,7 +104,6 @@ function JoinRequests() {
       });
 
       if (error) {
-        console.error("Error rejecting request:", error);
         setError(error.message);
         // Re-fetch if error to restore the request
         fetchOwnProjectJoinRequests();
@@ -115,7 +112,6 @@ function JoinRequests() {
 
       alert("Request rejected!");
     } catch (err: any) {
-      console.error("Error:", err);
       setError(err.message);
       // Re-fetch if error to restore the request
       fetchOwnProjectJoinRequests();

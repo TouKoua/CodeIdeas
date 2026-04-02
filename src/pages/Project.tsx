@@ -82,7 +82,8 @@ function ProjectContent({ project }: { project: Idea }) {
           setHasPendingRequest(true);
         }
       } catch (error: any) {
-        console.error("Error checking user status:", error);
+        alert("Error checking team status: " + error.message);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -112,7 +113,6 @@ function ProjectContent({ project }: { project: Idea }) {
       setHasPendingRequest(true);
       alert("Join request sent!");
     } catch (error) {
-      console.error("Error sending join request:", error);
       alert("Failed to send join request. Please try again.");
     } finally {
       setLoading(false);
