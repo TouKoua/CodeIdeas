@@ -7,7 +7,7 @@ function LandingPage() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
-          <h1 className="hero-title">Turn Your Coding Ideas Into Reality</h1>
+          <h1 className="hero-title">Your Home To Forge Ideas</h1>
           <p className="hero-subtitle">
             Share your innovative project ideas, find passionate collaborators,
             and build amazing things together.

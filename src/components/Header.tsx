@@ -17,7 +17,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         <Link to={homeLink} className="logo">
-          <h1>The Creative Spark</h1>
+          <h1>FoundryOS</h1>
         </Link>
         <nav className="nav">
           <Link to={homeLink} className="nav-link">

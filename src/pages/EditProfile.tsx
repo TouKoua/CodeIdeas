@@ -75,7 +75,7 @@ function EditProfile() {
       if (updateError) {
         throw updateError;
       }
-      navigate("/profile");
+      navigate(`/profile/${user?.id}`);
     } catch (error: any) {
       setError(error.message);
     } finally {
