@@ -241,6 +241,10 @@ function ProjectContent({ project }: { project: Idea }) {
           )}
         </div>
       </div>
+      <div className="projectUpdates-section">
+        <h1>Project Updates</h1>
+        <h3>Coming Soon!</h3>
+      </div>
     </div>
   );
 }

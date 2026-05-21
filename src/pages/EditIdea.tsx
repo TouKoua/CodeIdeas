@@ -10,6 +10,7 @@ function EditIdea() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("");
   const [techStack, setTechStack] = useState<string[]>([]);
   const [techInput, setTechInput] = useState("");
   const [difficulty_level, setDifficulty] = useState("");
@@ -38,6 +39,7 @@ function EditIdea() {
           setTitle(data.title);
           setDescription(data.description);
           setCategory(data.category);
+          setStatus(data.status);
           setTechStack(data.technologies || []);
           setDifficulty(data.difficulty);
           setGithubLink(data.github_link);
@@ -98,6 +100,7 @@ function EditIdea() {
           title,
           description,
           category,
+          status,
           technologies: techStack,
           difficulty: difficulty_level,
           github_link: githubLink,
@@ -159,6 +162,23 @@ function EditIdea() {
             <option value="Machine Learning">Machine Learning</option>
             <option value="Game Development">Game Development</option>
             <option value="Other">Other</option>
+          </select>
+          {/* Status Field */}
+          <label htmlFor="status">Status</label>
+          <select
+            id="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            disabled={loading}
+            required
+          >
+            <option value="">Select a status</option>
+            <option value="Open">Open</option>
+            <option value="Planning">Planning</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="On Hold">On Hold</option>
+            <option value="Cancelled">Cancelled</option>
           </select>
           {/* Tech Stack Field */}
           <label htmlFor="techStack">Tech Stack</label>
