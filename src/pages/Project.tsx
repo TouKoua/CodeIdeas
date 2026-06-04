@@ -8,7 +8,7 @@ import "./Project.css";
 import "../ui/Badge.css";
 import ProjectCard from "../components/ProjectCard";
 import { getDifficultyColor, getStatusColor } from "../ui/Badge";
-import type { Idea, Team } from "../types"; // adjust import path as needed
+import type { Idea, Team, UpdatePost } from "../types"; // adjust import path as needed
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import supabase from "../services/supabaseClient";
@@ -17,6 +17,8 @@ function ProjectContent({ project }: { project: Idea }) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+
+  // Project Fetch variables
   const projectList = useFetchSimilarProjects(project.id, project.technologies);
   const projectUser = useFetchUser(project.creator_id);
   const formattedDate = new Date().toLocaleDateString("en-US", {
@@ -24,16 +26,22 @@ function ProjectContent({ project }: { project: Idea }) {
     month: "long",
     day: "numeric",
   });
+
+  // Join Request Variables
   const [teamInfo, setTeamInfo] = useState<Team | null>(null);
-  const [teamMembers, setTeamMembers] = useState<any[]>([]); // You can replace 'any' with a proper type if you have one
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [isTeamMember, setIsTeamMember] = useState(false);
   const [hasPendingRequest, setHasPendingRequest] = useState(false);
   const [isTeamFull, setIsTeamFull] = useState(false);
+  const [updatePosts, setUpdatePosts] = useState<UpdatePost[]>([]);
+
+  // Update Post Variables
+  const [newUpdateTitle, setNewUpdateTitle] = useState("");
+  const [newUpdateDescription, setNewUpdateDescription] = useState("");
 
   useEffect(() => {
     const checkUserStatus = async () => {
       try {
-        // fetch the team information for the project
         const { data: team, error: teamError } = await supabase
           .from("teams")
           .select("*")
@@ -42,7 +50,6 @@ function ProjectContent({ project }: { project: Idea }) {
         if (teamError) throw teamError;
         setTeamInfo(team);
 
-        // Get ALL team members in ONE query
         const { data: allTeamMembers, error: teamMembersListError } =
           await supabase
             .from("team_members")
@@ -51,7 +58,6 @@ function ProjectContent({ project }: { project: Idea }) {
         if (teamMembersListError) throw teamMembersListError;
         setTeamMembers(allTeamMembers || []);
 
-        // Check if user is a member (O(n) loop)
         const userIsMember = allTeamMembers?.some(
           (member) => member.user_id === user?.id,
         );
@@ -61,14 +67,12 @@ function ProjectContent({ project }: { project: Idea }) {
           return;
         }
 
-        // Check if team is full
         if (allTeamMembers && allTeamMembers.length >= team.team_size) {
           setIsTeamFull(true);
           setLoading(false);
           return;
         }
 
-        // Check if user has pending request
         const { data: existingRequest, error: existingRequestError } =
           await supabase
             .from("join_requests")
@@ -91,15 +95,32 @@ function ProjectContent({ project }: { project: Idea }) {
     checkUserStatus();
   }, [project.id, user?.id]);
 
+  // Fetch update posts for the project
+  const fetchUpdatePosts = async () => {
+    const { data, error } = await supabase
+      .from("update_posts")
+      .select("*")
+      .eq("idea_id", project.id)
+      .order("updated_at", { ascending: false });
+    if (error) {
+      alert("Error fetching updates");
+    } else {
+      setUpdatePosts(data || []);
+    }
+  };
+
+  // Mount update posts on page load
+  useEffect(() => {
+    fetchUpdatePosts();
+  }, [project.id]);
+
   const handleJoinRequest = async () => {
-    // Implement join request logic here, e.g., open a modal or send a request to the backend
     if (!user) {
       alert("Please log in to send a join request.");
       navigate("/login");
       return;
     }
     try {
-      // Create the join request
       const { error: requestError } = await supabase
         .from("join_requests")
         .insert({
@@ -119,119 +140,177 @@ function ProjectContent({ project }: { project: Idea }) {
     }
   };
 
+  const handleUpdatePost = async () => {
+    try {
+      setLoading(true);
+      const { error } = await supabase.from("update_posts").insert({
+        idea_id: project.id,
+        title: newUpdateTitle,
+        description: newUpdateDescription,
+        updated_at: new Date(),
+      });
+      if (error) throw error;
+      alert("Update post created!");
+      setNewUpdateTitle("");
+      setNewUpdateDescription("");
+
+      // Refresh the update posts list after creating a new post
+      await fetchUpdatePosts();
+    } catch (error) {
+      alert("Failed to create update post. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="project-page">
       <button onClick={() => navigate(-1)} className="back-button">
-        Back
+        ← Back
       </button>
-      <div className="grid-layout">
-        <div className="project-column">
-          <div className="project-section">
-            <div className="project-padding">
-              <div className="project-title-spacing">
-                <h1 className="project-title">{project.title}</h1>
-                <div className="badge-spacing">
-                  <p>
-                    <span className={getDifficultyColor(project.difficulty)}>
-                      {project.difficulty}
-                    </span>
-                    <span className={getStatusColor(project.status || "")}>
-                      {project.status}
-                    </span>
-                  </p>
-                </div>
-              </div>
-              <div className="project-update">
-                <span>
-                  {project.updated_at ? "Updated" : "Posted"} on {formattedDate}
-                  {project.updated_at && (
-                    <span className="project-old-date">
-                      (Originally posted{" "}
-                      {new Date(project.created_at || "").toLocaleDateString(
-                        "en-US",
-                        { year: "numeric", month: "long", day: "numeric" },
-                      )}
-                      )
-                    </span>
-                  )}
-                </span>
-              </div>
-              <div className="project-description-spacing">
-                <p className="project-description">{project.description}</p>
-              </div>
-              <div className="project-duration-label">
-                {project.duration && (
-                  <div className="project-duration-text">
-                    <span>
-                      Estimated time to complete:{" "}
-                      <strong>{project.duration}</strong>
-                    </span>
-                  </div>
+
+      <div className="project-container">
+        <div className="project-main">
+          <h1 className="project-title">{project.title}</h1>
+
+          <div className="project-meta">
+            <span className={getDifficultyColor(project.difficulty)}>
+              {project.difficulty}
+            </span>
+            <span className={getStatusColor(project.status || "")}>
+              {project.status}
+            </span>
+          </div>
+
+          <div className="project-date">
+            {project.updated_at ? "Updated" : "Posted"} on {formattedDate}
+            {project.updated_at && (
+              <span className="original-date">
+                (Originally posted{" "}
+                {new Date(project.created_at || "").toLocaleDateString(
+                  "en-US",
+                  { year: "numeric", month: "long", day: "numeric" },
                 )}
-              </div>
-              <div className="project-language-section">
-                <div className="project-language-spacing-1">
-                  <span className="project-language-label">
-                    Programming Languages:
-                  </span>
-                </div>
-                <div className="project-language-spacing-2">
-                  {project.technologies?.map((language) => (
-                    <Link
-                      key={language}
-                      to={`/search?language=${language}`}
-                      className="project-language-badge"
-                    >
-                      {language}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-              <div className="team-size-info">
-                Team Size: {teamMembers.length}/{teamInfo?.team_size}
-              </div>
-              <div className="join-button-section">
-                {isTeamMember ? (
-                  <p>You're already a member</p>
-                ) : hasPendingRequest ? (
-                  <p>Your request is pending</p>
-                ) : isTeamFull ? (
-                  <p>This team is full</p>
-                ) : (
-                  <button onClick={handleJoinRequest} disabled={loading}>
-                    Join Project
-                  </button>
-                )}
-              </div>
+                )
+              </span>
+            )}
+          </div>
+
+          <p className="project-description">{project.description}</p>
+
+          {project.duration && (
+            <div className="project-duration">
+              <strong>Estimated time:</strong> {project.duration}
+            </div>
+          )}
+
+          <div className="project-languages">
+            <strong>Technologies:</strong>
+            <div className="language-list">
+              {project.technologies?.map((language) => (
+                <Link
+                  key={language}
+                  to={`/search?language=${language}`}
+                  className="language-badge"
+                >
+                  {language}
+                </Link>
+              ))}
             </div>
           </div>
+
+          <div className="team-info">
+            <p>
+              Team Size: {teamMembers.length}/{teamInfo?.team_size}
+            </p>
+
+            <div className="join-section">
+              {isTeamMember ? (
+                <p className="status-text">✓ You're already a member</p>
+              ) : hasPendingRequest ? (
+                <p className="status-text">⏳ Your request is pending</p>
+              ) : isTeamFull ? (
+                <p className="status-text">✗ This team is full</p>
+              ) : (
+                <button
+                  onClick={handleJoinRequest}
+                  disabled={loading}
+                  className="join-button"
+                >
+                  {loading ? "Sending..." : "Join Project"}
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="updates-section">
+            <h3>Project Updates</h3>
+            {project.creator_id === user?.id && (
+              <div className="new-update-form">
+                <input
+                  type="text"
+                  placeholder="Update Title"
+                  value={newUpdateTitle}
+                  onChange={(e) => setNewUpdateTitle(e.target.value)}
+                />
+                <textarea
+                  placeholder="Update Description"
+                  value={newUpdateDescription}
+                  onChange={(e) => setNewUpdateDescription(e.target.value)}
+                />
+                <button
+                  onClick={handleUpdatePost}
+                  disabled={loading}
+                  className="post-update-button"
+                >
+                  {loading ? "Posting..." : "Post Update"}
+                </button>
+              </div>
+            )}
+            {updatePosts.length > 0 ? (
+              <div className="updates-list">
+                {updatePosts.map((update) => (
+                  <div key={update.id} className="update-post">
+                    <h4>{update.title}</h4>
+                    <p>{update.description}</p>
+                    <span className="update-date">
+                      {new Date(update.updated_at).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-updates">No updates available</p>
+            )}
+          </div>
         </div>
-        <div className="other-column">
-          <div className="profile-section">
-            <h3 className="profile-title">Project Owner</h3>
+
+        <aside className="project-sidebar">
+          <div className="owner-card">
+            <h3>Project Owner</h3>
             <img
               src={projectUser.user?.avatar_url || "/default-avatar.png"}
               alt={`${projectUser.user?.first_name} ${projectUser.user?.last_name}'s avatar`}
-              className="profile-avatar"
+              className="owner-avatar"
             />
             <br />
-            <Link
-              to={`/profile/${project.creator_id}`}
-              state={{ from: "project" }}
-            >
+            <Link to={`/profile/${project.creator_id}`}>
               {projectUser.user?.first_name} {projectUser.user?.last_name}
             </Link>
           </div>
+
           {projectList.similarProjects.length > 0 && (
-            <div>
-              <h3 className="similar-project-title">Similar Projects</h3>
-              <div className="similar-project-spacing">
+            <div className="similar-projects">
+              <h3>Similar Projects</h3>
+              <div className="similar-list">
                 {projectList.similarProjects.map((similarProject) => (
                   <Link
                     to={`/project/${similarProject.id}`}
-                    state={{ from: "project" }}
                     key={similarProject.id}
-                    className="block"
                   >
                     <ProjectCard project={similarProject} />
                   </Link>
@@ -239,11 +318,7 @@ function ProjectContent({ project }: { project: Idea }) {
               </div>
             </div>
           )}
-        </div>
-      </div>
-      <div className="projectUpdates-section">
-        <h1>Project Updates</h1>
-        <h3>Coming Soon!</h3>
+        </aside>
       </div>
     </div>
   );

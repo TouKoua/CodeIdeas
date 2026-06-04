@@ -50,3 +50,11 @@ export interface JoinRequest {
   requested_at: string;
   responded_at?: string;
 }
+
+export interface UpdatePost{
+  id: string;
+  project_id: string;
+  title: string;
+  description: string;
+  updated_at: string;
+}
